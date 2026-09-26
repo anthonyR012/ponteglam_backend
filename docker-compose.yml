@@ -1,0 +1,83 @@
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000 # uvicorn ponteglam.asgi:application --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ../static_collected:/static_collected
+      - ../media:/media
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"  # Exposes port 8000 of the container to port 8000 on the host
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ../static_collected:/static_collected
+      - ../media:/media
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - web
+
+  celery:
+    build: .
+    command: celery -A ponteglam worker --loglevel=info
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - web
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A ponteglam beat --loglevel=info
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=${REDIS_URL}
+    depends_on:
+      - web
+      - redis
+
+  redis:
+    image: redis:latest
+
+  postgres:
+    image: postgres:13
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+    - "5433:5432"
+
+volumes:
+  postgres_data:

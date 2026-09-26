@@ -1,0 +1,200 @@
+TUTORIAL APACHE
+
+Update your Ubuntu 22.04 operating system to the latest version with the following command:
+
+# apt update && sudo apt upgrade -y
+Step 2: Install Apache with mod_wsgi Module
+To setup Django to production we will install Apache and the Apache mod_wsgi module.
+
+You can install them via apt package manager by executing the following command:
+
+# sudo apt install apache2 libapache2-mod-wsgi-py3
+Once all the packages are installed, you can start the Apache service and configure it to run on startup by entering the following commands:
+
+# sudo  systemctl start apache2
+# sudo  systemctl enable apache2
+Verify the status of the Apache service using systemctl status command:
+
+# sudo  systemctl status apache2
+Output:
+
+● apache2.service - The Apache HTTP Server
+     Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: enabled)
+     Active: active (running)
+       Docs: https://httpd.apache.org/docs/2.4/
+   Main PID: 39757 (apache2)
+      Tasks: 55 (limit: 2200)
+     Memory: 15.2M
+        CPU: 206ms
+     CGroup: /system.slice/apache2.service
+             ├─39757 /usr/sbin/apache2 -k start
+             ├─39761 /usr/sbin/apache2 -k start
+             └─39762 /usr/sbin/apache2 -k start
+
+Step 4: Install Pip on Ubuntu 22.04
+Python comes already installed by default on Ubuntu 22.04. You can verify it by checking its version:
+
+# python3 -V
+Output:
+Python 3.10.6
+Use the following command to install pip and venv on Ubuntu 22.04:
+
+# apt install python3-venv python3-pip
+Verify your Pip installation by checking its version:
+
+# pip3 --version
+Output:
+pip 22.0.2 from /usr/lib/python3/dist-packages/pip (python 3.10)
+Step 5: Install Django Using Virtualenv
+First, create a directory and switch to it with the commands below:
+
+# mkdir /var/www/django_project 
+# cd /var/www/django_project
+Before you install Django, you first need to create a Python virtual environment.
+
+# python3 -m venv django_env
+Next, activate the virtual environment with the following command:
+
+# source django_env/bin/activate
+Next, install the latest  Django version using the following command:
+
+(django_env) # pip install django
+You will get the following output:
+
+Collecting django
+  Downloading Django-4.1.1-py3-none-any.whl (8.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.1/8.1 MB 3.3 MB/s eta 0:00:00
+Collecting asgiref<4,>=3.5.2
+  Downloading asgiref-3.5.2-py3-none-any.whl (22 kB)
+Collecting sqlparse>=0.2.2
+  Downloading sqlparse-0.4.3-py3-none-any.whl (42 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.8/42.8 kB 2.0 MB/s eta 0:00:00
+Installing collected packages: sqlparse, asgiref, django
+Successfully installed asgiref-3.5.2 django-4.1.1 sqlparse-0.4.3
+Verify the Django version with the following command:
+
+(django_env) # django-admin --version
+You will get the following output:
+
+4.1.1
+Since you are setting a production site ensure you’ve python mysqlclient installed:
+
+(django_env) # pip install mysqlclient
+You will get the following output:
+
+Collecting mysqlclient
+  Downloading mysqlclient-2.1.1.tar.gz (88 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 88.1/88.1 KB 1.3 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Using legacy 'setup.py install' for mysqlclient, since package 'wheel' is not installed.
+Installing collected packages: mysqlclient
+  Running setup.py install for mysqlclient ... done
+Successfully installed mysqlclient-2.1.1
+Step 6: Creating your Django project
+Now you need to create Django project in django_project directory.
+
+(django_env) # django-admin startproject django_app .
+Next, modify settings.py file:
+
+(django_env) # nano django_app/settings.py
+Add the URL in ALLOWED_HOST List which is above INSTALLED_APPS.
+
+ALLOWED_HOSTS = ['your_server_ip', 'your-domain.com']
+The default database set in Django is SQLite. Replace SQLite database backend:
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+with MySQL database engine backend :
+
+DATABASES = {
+'default': {
+'ENGINE': 'django.db.backends.mysql',
+'NAME': 'django_db',
+'USER': 'django_user',
+'PASSWORD': 'Pa$$word',
+'HOST': '127.0.0.1',
+'PORT' : '3306',
+}
+}
+In order for our webserver to serve the static files add the following lines:
+
+import os
+
+STATIC_URL='/static/'
+STATIC_ROOT=os.path.join(BASE_DIR, 'static/') 
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR, 'media/')
+Once done, save the file and exit the text editor.
+
+Now, You can migrate the initial database schema to our MySQL database using the management script:
+
+(django_env) # ./manage.py  makemigrations
+(django_env) # ./manage.py  migrate
+Create an administrative user for the project by typing:
+
+(django_env) # ./manage.py createsuperuser
+You will have to provide a username, an email address, and choose and confirm a password.
+
+Username (leave blank to use 'root'): admin
+Email address: admin@your-domain.com
+Password:
+Password (again):
+Superuser created successfully.
+You can collect all of the static content into the directory location you configured by running the command:
+
+(django_env) # ./manage.py collectstatic
+This will collect all the project static files in static directory. It will give some output like this:
+
+130 static files copied to '/var/www/django_project/static'.
+To deactivate the virtual environment run the following command:
+
+(django_env) # deactivate
+Step 7: Configure Apache Web Server for Django
+Navigate to /etc/apache2/sites-available directory and run the following command to create a configuration file for your installation:
+
+# nano /etc/apache2/sites-available/django.conf
+Add the following content:
+
+<VirtualHost *:80>
+        ServerAdmin pablocfes@gmail.com
+        ServerName jpgonzalez.lol
+        ServerAlias www.jpgonzalez.lol
+
+        DocumentRoot /home/ubuntu/vanisa/vanisa
+        ErrorLog ${APACHE_LOG_DIR}/jpgonzalez.lol_error.log
+        CustomLog ${APACHE_LOG_DIR}/jpgonzalez.lol?acces.log combined
+
+        Alias /static /home/ubuntu/vanisa/vanisa/staticfiles
+        <Directory /home/ubuntu/vanisa/vanisa/staticfiles>
+                Require all granted
+        </Directory>
+
+        Alias /media/ /home/ubuntu/vanisa/vanisa/media/
+        <Directory /home/ubuntu/vanisa/vanisa/media>
+                Require all granted
+        </Directory>
+
+        <Directory /home/ubuntu/vanisa/vanisa/config>
+                <Files wsgi.py>
+                        Require all granted
+                </Files>
+        </Directory>
+        LogLevel info
+        WSGIDaemonProcess vanisa python-path=/home/ubuntu/vanisa/vanisa python-home=/home/ubuntu/vanisa/venv
+        WSGIProcessGroup vanisa
+        WSGIScriptAlias / /home/ubuntu/vanisa/vanisa/config/wsgi.py
+
+</VirtualHost>
+Save the file and Exit.
+
+Enable the Django virtual host:
+
+# a2ensite django.conf
+Restart the Apache web server.
+
+# systemctl restart apache2

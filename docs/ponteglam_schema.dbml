@@ -1,0 +1,88 @@
+Table User {
+  id integer [pk]
+  full_name varchar
+  email varchar [not null, unique]
+  phone varchar
+  password varchar [not null]
+  is_active boolean [not null]
+  type varchar
+}
+
+Table UserAddress {
+  id integer [pk]
+  user_id integer [ref: > User.id, not null]
+  address varchar
+  latitude varchar
+  longitude varchar
+}
+
+Table Company {
+  id integer [pk]
+  created_by_user_id integer [ref: > User.id, not null]
+  name varchar [not null]
+  description text
+  is_verified boolean [not null]
+}
+
+Table Headquarter {
+  id integer [pk]
+  company_id integer [ref: > Company.id]
+  name varchar [not null]
+  address varchar
+  latitude varchar
+  longitude varchar
+  phone_number varchar
+  rating float
+}
+
+Table Service {
+  id integer [pk]
+  headquarter_id integer [ref: > Headquarter.id]
+  name varchar [not null]
+  description varchar
+  price decimal [not null]
+  only_home_service boolean [not null]
+  home_service_price decimal
+}
+
+Table Worker {
+  id integer [pk]
+  user_id integer [ref: > User.id]
+  headquarter_id integer [ref: > Headquarter.id]
+  name varchar
+}
+
+Table WorkerService {
+  id integer [pk]
+  worker_id integer [ref: > Worker.id, not null]
+  service_id integer [ref: > Service.id, not null]
+  is_pending_removal boolean [not null]
+}
+
+Table WorkerAvailability {
+  id integer [pk]
+  worker_id integer [ref: > Worker.id, not null]
+  weekday integer [not null]
+  start_time time [not null]
+  end_time time [not null]
+}
+
+Table Appointment {
+  id integer [pk]
+  user_id integer [ref: > User.id]
+  price decimal [not null]
+  status varchar [not null]
+  payment_method varchar [not null]
+  is_home_service boolean [not null]
+  home_address_id integer [ref: > UserAddress.id]
+  created_at datetime [not null]
+}
+
+Table AppointmentService {
+  id integer [pk]
+  appointment_id integer [ref: > Appointment.id, not null]
+  service_id integer [ref: > Service.id, not null]
+  worker_id integer [ref: > Worker.id, not null]
+  start_time datetime [not null]
+  end_time datetime [not null]
+}

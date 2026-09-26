@@ -1,0 +1,469 @@
+{
+    "categories_services": [
+        {
+            "description": "Barbería",
+            "color": "ff5b57",
+            "picture": "barbershop.png",
+            "state": "active"
+        },
+        {
+            "description": "Entrenador",
+            "color": "ff5b57",
+            "picture": "coach.png",
+            "state": "active"
+        },
+        {
+            "description": "Cuidado de Piel",
+            "color": "ff5b57",
+            "picture": "cuidado_piel.png",
+            "state": "active"
+        },
+        {
+            "description": "Salud Mental",
+            "color": "ff5b57",
+            "picture": "mind.png",
+            "state": "active"
+        },
+        {
+            "description": "Peluqueria",
+            "color": "ff5b57",
+            "picture": "peluqueria.png",
+            "state": "active"
+        },
+        {
+            "description": "Spa",
+            "color": "ff5b57",
+            "picture": "spa.png",
+            "state": "active"
+        },
+        {
+            "description": "Tatuajes",
+            "color": "ff5b57",
+            "picture": "tatto.png",
+            "state": "active"
+        },
+        {
+            "description": "Otro",
+            "color": "ff5b57",
+            "picture": "otro.png",
+            "state": "active"
+        }
+    ],
+    "services": [
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede CC Unico",
+                "Sede Chipichape",
+                "Sede centro"
+            ],
+            "name": "Corte de Cabello Clásico",
+            "description": "Corte de cabello clásico con tijera y máquina, terminado con peine y secador.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 12000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Peluqería",
+            "amenities": [
+                "icon_wifi",
+                "icon_easy_access",
+                "icon_advice"
+            ],
+            "pictures": [
+                "service_1_1_1_1.jpg",
+                "service_1_1_1_2.jpg"
+            ],
+            "addons": [
+                { "name": "Secado profesional", "description": "Secado con difusor y productos de protección térmica", "price": 5000, "duration_minutes": 15 },
+                { "name": "Aceite de argán", "description": "Aplicación de aceite de argán para brillo y suavidad", "price": 3000, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede CC Unico",
+                "Sede Chipichape",
+                "Sede centro"
+            ],
+            "name": "Corte de Cabello y Barba",
+            "description": "Corte de cabello y arreglo de barba con aceites y toallas calientes.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 20000,
+            "state": "available",
+            "gender": "male",
+            "service_category": "Barbería",
+            "amenities": [
+                "icon_wifi",
+                "icon_easy_access",
+                "icon_advice"
+            ],
+            "pictures": [
+                "service_1_1_2_1.jpg",
+                "service_1_1_2_2.jpg"
+            ],
+            "addons": [
+                { "name": "Aceite hidratante de barba", "description": "Tratamiento de hidratación con aceite premium para barba", "price": 4000, "duration_minutes": 10 },
+                { "name": "Mascarilla facial", "description": "Mascarilla calmante post-afeitado", "price": 6000, "duration_minutes": 15 }
+            ]
+        },
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede CC Unico"
+            ],
+            "name": "Corte de Cabello Infantil",
+            "description": "Corte de cabello para niños, con estilo moderno y divertido.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 8000,
+            "state": "available",
+            "gender": "kid",
+            "service_category": "Peluqería",
+            "amenities": [
+                "icon_wifi",
+                "icon_snack",
+                "icon_easy_access",
+                "icon_child"
+            ],
+            "pictures": [
+                "service_1_1_3_1.jpg",
+                "service_1_1_3_2.jpg"
+            ],
+            "addons": [
+                { "name": "Snack y jugo", "description": "Snack y jugo de frutas durante el servicio", "price": 0, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede Chipichape"
+            ],
+            "name": "Tintura de Cabello",
+            "description": "Aplicación de tintura en cabello con productos de alta calidad, incluye lavado y secado.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 35000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Peluqería",
+            "amenities": [
+                "icon_wifi",
+                "icon_advice",
+                "icon_calendar"
+            ],
+            "pictures": [
+                "service_1_1_4_1.jpg",
+                "service_1_1_4_2.jpg"
+            ],
+            "addons": [
+                { "name": "Tratamiento de brillo", "description": "Aplicación de gloss transparente para sellado y brillo duradero", "price": 8000, "duration_minutes": 15 },
+                { "name": "Mascarilla hidratante", "description": "Mascarilla intensiva de hidratación post-tintura", "price": 10000, "duration_minutes": 20 }
+            ]
+        },
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede Chipichape"
+            ],
+            "name": "Tratamiento Capilar",
+            "description": "Tratamiento capilar para revitalizar y fortalecer el cabello, incluye masaje capilar.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 25000,
+            "state": "available",
+            "gender": "any_person",
+            "service_category": "Peluqería",
+            "amenities": [
+                "icon_wifi",
+                "icon_advice",
+                "icon_calendar"
+            ],
+            "pictures": [
+                "service_1_1_5_1.jpg"
+            ],
+            "addons": [
+                { "name": "Ampolla reconstructora", "description": "Ampolla de queratina para reconstrucción intensiva del cabello", "price": 12000, "duration_minutes": 20 }
+            ]
+        },
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede Chipichape"
+            ],
+            "name": "Depilación Facial",
+            "description": "Depilación de cejas y rostro con cera o hilo.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 15000,
+            "state": "available",
+            "gender": "female",
+            "service_category": "Otro",
+            "amenities": [
+                "icon_wifi"
+            ],
+            "pictures": [
+                "service_1_1_6_1.jpg"
+            ],
+            "addons": [
+                { "name": "Cera despigmentante", "description": "Aplicación de cera con efecto despigmentante para piel más uniforme", "price": 5000, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Gonzalez Barber Shop",
+            "headquarters": [
+                "Sede centro"
+            ],
+            "name": "Corte de Cabello con Diseño",
+            "description": "Corte de cabello con diseño artístico, perfecto para un look único y original.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 18000,
+            "state": "available",
+            "gender": "male",
+            "service_category": "Barbería",
+            "amenities": [
+                "icon_wifi",
+                "icon_calendar"
+            ],
+            "pictures": [
+                "service_1_1_7_1.jpg",
+                "service_1_1_7_2.jpg"
+            ],
+            "addons": [
+                { "name": "Delineado de diseño extra", "description": "Delineado artístico adicional con detalles a libre escogencia", "price": 5000, "duration_minutes": 15 }
+            ]
+        },
+        {
+            "company": "Rubio Barber Lounge",
+            "headquarters": [
+                "Sede Sur",
+                "Sede Norte"
+            ],
+            "name": "Corte de Barba y Bigote",
+            "description": "Corte de barba y bigote con navaja y tijera, incluye retoque de contorno.",
+            "confirmation_in": 15,
+            "remember_in": 15,
+            "only_home_service": "False",
+            "price": 15000,
+            "state": "available",
+            "gender": "male",
+            "service_category": "Barbería",
+            "amenities": [
+                "icon_wifi",
+                "icon_snack",
+                "icon_easy_access"
+            ],
+            "pictures": [
+                "service_2_1_1_1.jpg",
+                "service_2_1_1_2.jpg"
+            ],
+            "addons": [
+                { "name": "Aceite de barba premium", "description": "Tratamiento hidratante con aceite de argán y jojoba", "price": 4000, "duration_minutes": 10 },
+                { "name": "Toalla caliente", "description": "Ritual de apertura de poros con toalla caliente aromática", "price": 0, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Rubio Barber Lounge",
+            "headquarters": [
+                "Sede Sur",
+                "Sede Norte"
+            ],
+            "name": "Corte de Cabello Moderno",
+            "description": "Corte de cabello con las últimas tendencias, incluye lavado y secado.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 18000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Peluqería",
+            "amenities": [
+                "icon_wifi",
+                "icon_calendar",
+                "icon_advice"
+            ],
+            "pictures": [
+                "service_2_1_2_1.jpg",
+                "service_2_1_2_2.jpg"
+            ],
+            "addons": [
+                { "name": "Secado con volumen", "description": "Secado técnico con cepillo redondo para máximo volumen", "price": 6000, "duration_minutes": 15 },
+                { "name": "Sérum anti-frizz", "description": "Aplicación de sérum para controlar el frizz y dar brillo", "price": 4000, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Rubio Barber Lounge",
+            "headquarters": [
+                "Sede Sur",
+                "Sede Norte"
+            ],
+            "name": "Servicio de Spa Facial",
+            "description": "Tratamiento de spa facial completo, incluye exfoliación y mascarilla.",
+            "confirmation_in": 45,
+            "remember_in": 45,
+            "only_home_service": "False",
+            "price": 25000,
+            "state": "available",
+            "gender": "no_specified",
+            "service_category": "Spa",
+            "amenities": [
+                "icon_wifi",
+                "icon_easy_access",
+                "icon_child"
+            ],
+            "pictures": [
+                "service_2_1_3_1.jpg",
+                "service_2_1_3_2.jpg"
+            ],
+            "addons": [
+                { "name": "Masaje de cuero cabelludo", "description": "Masaje relajante de cuero cabelludo con aceites esenciales", "price": 8000, "duration_minutes": 15 },
+                { "name": "Aromaterapia", "description": "Difusión de aceites esenciales durante el tratamiento", "price": 0, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Yanez Barber Studio",
+            "headquarters": [
+                "Sede Central"
+            ],
+            "name": "Corte de Cabello y Afeitado Completo",
+            "description": "Corte de cabello moderno seguido de un afeitado completo utilizando técnicas avanzadas.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 20000,
+            "state": "available",
+            "gender": "male",
+            "service_category": "Barbería",
+            "amenities": [
+                "icon_wifi",
+                "icon_snack",
+                "icon_calendar"
+            ],
+            "pictures": [
+                "service_3_1_1_1.jpg"
+            ],
+            "addons": [
+                { "name": "Afeitado con navaja de seguridad", "description": "Afeitado clásico con navaja de seguridad y espuma de lujo", "price": 7000, "duration_minutes": 15 },
+                { "name": "Bálsamo post-afeitado", "description": "Aplicación de bálsamo calmante y nutritivo post-afeitado", "price": 3000, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Botero Nail Spa",
+            "headquarters": [
+                "Sede Principal"
+            ],
+            "name": "Manicura Clásica",
+            "description": "Servicio de manicura clásica que incluye corte, limado, exfoliación y esmaltado.",
+            "confirmation_in": 20,
+            "remember_in": 20,
+            "only_home_service": "False",
+            "price": 15000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Spa",
+            "amenities": [
+                "icon_wifi",
+                "icon_snack",
+                "icon_easy_access"
+            ],
+            "pictures": [
+                "service_4_1_1_1.jpg"
+            ],
+            "addons": [
+                { "name": "Esmaltado en gel", "description": "Esmaltado en gel de larga duración hasta 3 semanas", "price": 8000, "duration_minutes": 15 },
+                { "name": "Diseño nail art", "description": "Arte en uñas a libre escogencia (flores, líneas, puntos)", "price": 10000, "duration_minutes": 20 }
+            ]
+        },
+        {
+            "company": "Botero Nail Spa",
+            "headquarters": [
+                "Sede Principal"
+            ],
+            "name": "Pedicura Deluxe",
+            "description": "Tratamiento de pedicura completo con hidratación profunda, exfoliación y masaje en pies.",
+            "confirmation_in": 30,
+            "remember_in": 30,
+            "only_home_service": "False",
+            "price": 20000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Spa",
+            "amenities": [
+                "icon_wifi",
+                "icon_calendar",
+                "icon_child"
+            ],
+            "pictures": [
+                "service_4_1_1_2.jpg",
+                "service_4_1_1_3.jpg"
+            ],
+            "addons": [
+                { "name": "Masaje de pies con piedras", "description": "Masaje descontracturante con piedras calientes en pies y pantorrillas", "price": 12000, "duration_minutes": 20 }
+            ]
+        },
+        {
+            "company": "Botero Nail Spa",
+            "headquarters": [
+                "Sede Principal"
+            ],
+            "name": "Uñas Acrílicas",
+            "description": "Aplicación uñas acrílicas personalizadas, incluyendo diseño a medida según preferencia del cliente.",
+            "confirmation_in": 45,
+            "remember_in": 45,
+            "only_home_service": "False",
+            "price": 35000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Spa",
+            "amenities": [
+                "icon_wifi",
+                "icon_advice",
+                "icon_easy_access"
+            ],
+            "pictures": [
+                "service_4_1_1_4.jpg"
+            ],
+            "addons": [
+                { "name": "Brillos y decoración", "description": "Aplicación de brillos, piedras y accesorios decorativos en uñas", "price": 5000, "duration_minutes": 15 },
+                { "name": "Reparación de uña", "description": "Reparación de uña quebrada o dañada incluida en el servicio", "price": 0, "duration_minutes": 10 }
+            ]
+        },
+        {
+            "company": "Botero Nail Spa",
+            "headquarters": [
+                "Sede Principal"
+            ],
+            "name": "Manicura y Pedicura Combinada",
+            "description": "Paquete que incluye manicura y pedicura clásica con exfoliación y esmaltado en manos y pies.",
+            "confirmation_in": 60,
+            "remember_in": 60,
+            "only_home_service": "False",
+            "price": 45000,
+            "state": "available",
+            "gender": "women_men",
+            "service_category": "Spa",
+            "amenities": [
+                "icon_wifi",
+                "icon_snack",
+                "icon_calendar"
+            ],
+            "pictures": [
+                "service_4_1_1_5.jpg",
+                "service_4_1_1_6.jpg"
+            ],
+            "addons": [
+                { "name": "Exfoliación de codos", "description": "Exfoliación intensiva en codos para piel suave y uniforme", "price": 5000, "duration_minutes": 10 },
+                { "name": "Parafina en manos", "description": "Baño de parafina para hidratación profunda en manos", "price": 8000, "duration_minutes": 15 }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+sudo apt-get install -y libpangocairo-1.0-0
+
+for apache files
+ 248  sudo chown -R ubuntu:www-data /home/ubuntu/vanisa/vanisa
+ 249  sudo chmod 2775 /home/ubuntu/vanisa/vanisa
+for django migrations
+You did not add the app in INSTALLED_APPS list in settings.py (You have to add either the app name or the dotted path to the subclass of AppConfig in apps.py in the app folder, depending on the version of django you are using). Refer documentation: INSTALLED_APPS
+You don't have migrations folder inside those apps. (Solution: just create that folder).
+You don't have __init__.py file inside migrations folder of those apps. (Solution: Just create an empty file with name __init__.py)
+You don't have an __init__.py file inside the app folder. (Solution: Just create an empty file with name __init__.py)
+You don't have a models.py file in the app
+Your Python class (supposed to be a model) in models.py doesn't inherit django.db.models.Model
+You have some semantic mistake in definition of models in models.py

@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+# Caché de archivos de compilación
+*.mo
+
+# Directorio de archivos de medios
+/media/
+
+# Entorno virtual
+env/
+venv/
+
+# Archivo de registro de Django
+*.log
+
+# Archivos de base de datos
+*.sqlite3
+*.db
+
+# Otros archivos generados por Django
+*.pyc
+
+# Carpeta de migraciones de Django
+*/migrations/*
+!*/migrations/__init__.py
+media/
+
+# Archivos de configuración específicos de tu IDE o editor de texto
+.idea/
+.vscode/
+
+# Secretos / credenciales (nunca commitear)
+.env
+*.key
+*firebase-adminsdk*.json
+dump.rdb
+celerybeat-schedule

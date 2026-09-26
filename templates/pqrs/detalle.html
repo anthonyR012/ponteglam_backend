@@ -1,0 +1,99 @@
+{% extends 'pqrs/base.html' %}
+{% block title %}Detalle — {{ pqrs.radicado|default:"No encontrado" }}{% endblock %}
+
+{% block content %}
+<div class="container--sm fade-in">
+
+  {% if pqrs %}
+
+  <div class="flex-between mb-4" style="flex-wrap:wrap; gap:12px;">
+    <a href="{% url 'pqrs:consultar' %}" class="btn btn--ghost" style="font-size:0.88rem;">
+      ← Volver
+    </a>
+    <span class="badge badge--{{ pqrs.estado_color }}" style="font-size:0.85rem; padding:6px 16px;">
+      {{ pqrs.get_estado_display }}
+    </span>
+  </div>
+
+  <div class="radicado-box mb-8">
+    <p class="radicado-box__label">Radicado</p>
+    <p class="radicado-box__code">{{ pqrs.radicado }}</p>
+    <p style="color:var(--gray-300); font-size:0.82rem; margin-top:8px;">
+      {{ pqrs.get_tipo_display }} &mdash; {{ pqrs.created_at|date:"d de N de Y, H:i" }}
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card__body">
+      <h3 class="serif" style="font-size:1.2rem; margin-bottom:20px; color:var(--navy);">
+        Datos del solicitante
+      </h3>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <p class="detail-item__label">Nombre completo</p>
+          <p class="detail-item__value">{{ pqrs.nombre_completo }}</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-item__label">Correo electrónico</p>
+          <p class="detail-item__value">{{ pqrs.email }}</p>
+        </div>
+        {% if pqrs.telefono %}
+        <div class="detail-item">
+          <p class="detail-item__label">Teléfono</p>
+          <p class="detail-item__value">{{ pqrs.telefono }}</p>
+        </div>
+        {% endif %}
+        {% if pqrs.documento_identidad %}
+        <div class="detail-item">
+          <p class="detail-item__label">Documento</p>
+          <p class="detail-item__value">{{ pqrs.documento_identidad }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card__body">
+      <h3 class="serif" style="font-size:1.2rem; margin-bottom:20px; color:var(--navy);">
+        Contenido de la solicitud
+      </h3>
+      <div class="detail-full" style="padding:0; border:none;">
+        <p class="detail-item__label">Asunto</p>
+        <p class="detail-item__value" style="font-size:1rem; margin-bottom:20px;">{{ pqrs.asunto }}</p>
+
+        <p class="detail-item__label">Descripción</p>
+        <p class="detail-item__value" style="white-space:pre-line; color:var(--gray-700); line-height:1.8;">{{ pqrs.descripcion }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if pqrs.tiene_respuesta %}
+  <div class="card mt-4">
+    <div class="card__header" style="background:linear-gradient(135deg,#1a5c36,#256b40);">
+      <h2 style="font-size:1.2rem;">✅ Respuesta oficial</h2>
+      <p>Actualizado el {{ pqrs.updated_at|date:"d/m/Y H:i" }}</p>
+    </div>
+    <div class="card__body">
+      <p style="white-space:pre-line; line-height:1.8; color:var(--gray-700);">{{ pqrs.respuesta }}</p>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert--warning mt-4">
+    ⏳ Tu solicitud está siendo gestionada. Recibirás respuesta en los plazos establecidos.
+  </div>
+  {% endif %}
+
+  <div class="text-center mt-8" style="color:var(--gray-500); font-size:0.82rem;">
+    Última actualización: {{ pqrs.updated_at|date:"d/m/Y H:i" }}
+  </div>
+
+  {% else %}
+  <div class="alert alert--danger">
+    ⚠ No se encontró ninguna PQRS con ese radicado.
+    <a href="{% url 'pqrs:consultar' %}">Intenta de nuevo</a>.
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

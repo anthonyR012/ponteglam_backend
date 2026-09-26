@@ -1,0 +1,72 @@
+{% extends 'pqrs/base.html' %}
+{% block title %}PQRS — Inicio{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <div class="hero__content">
+    <span class="hero__eyebrow">Sistema de atención ciudadana</span>
+    <h1 class="hero__title">
+      Peticiones, Quejas,<br><em>Reclamos y Más</em>
+    </h1>
+    <p class="hero__subtitle">
+      Radica tu solicitud de forma rápida y segura.<br>
+      Haz seguimiento en cualquier momento con tu código de radicado.
+    </p>
+  </div>
+</div>
+
+<div class="container" style="margin-top: -32px; position: relative; z-index: 2;">
+  <div class="action-grid stagger">
+
+    <a href="{% url 'pqrs:crear' %}" class="action-card">
+      <div class="action-card__icon">📝</div>
+      <h3 class="action-card__title">Radicar PQRS</h3>
+      <p class="action-card__desc">
+        Crea una nueva petición, queja, reclamo, sugerencia o denuncia.
+      </p>
+    </a>
+
+    <a href="{% url 'pqrs:consultar' %}" class="action-card action-card--secondary">
+      <div class="action-card__icon">🔍</div>
+      <h3 class="action-card__title">Consultar estado</h3>
+      <p class="action-card__desc">
+        Ingresa tu código de radicado y revisa el avance de tu solicitud.
+      </p>
+    </a>
+
+  </div>
+
+  <div class="card mt-8 fade-in">
+    <div class="card__body">
+      <h3 class="serif" style="font-size:1.3rem; margin-bottom:16px;">¿Cómo funciona?</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px;">
+
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="background:var(--brand-grad);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">1</div>
+          <div>
+            <strong style="display:block;margin-bottom:4px;">Diligencia el formulario</strong>
+            <span class="text-muted" style="font-size:0.88rem;">Completa tus datos y describe tu solicitud.</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="background:var(--brand-grad);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">2</div>
+          <div>
+            <strong style="display:block;margin-bottom:4px;">Recibe tu radicado</strong>
+            <span class="text-muted" style="font-size:0.88rem;">Al enviar, obtienes un código único de seguimiento.</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="background:var(--brand-grad);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">3</div>
+          <div>
+            <strong style="display:block;margin-bottom:4px;">Haz seguimiento</strong>
+            <span class="text-muted" style="font-size:0.88rem;">Consulta el estado y la respuesta en cualquier momento.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

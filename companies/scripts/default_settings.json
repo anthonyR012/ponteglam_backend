@@ -1,0 +1,163 @@
+{
+    "companies": [
+        {
+            "name": "Gonzalez Barber Shop",
+            "description": "Gonzalez Barber Shop SA",
+            "created_by_user": "juanpablo",
+            "type": "employer",
+            "state": "available",
+            "picture":"company_1.jpg",
+            "headquarters": [
+                {
+                    "name": "Sede CC Unico",
+                    "phone_number": "3151478523",
+                    "address": "Cra 12 # 12-12",
+                    "latitude": "3.464895",
+                    "longitude": "-76.500903",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "main",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_1_1_1.jpg",
+                        "headquarter_1_1_2.jpg",
+                        "headquarter_1_1_3.jpg"
+                    ]
+                },
+                {
+                    "name": "Sede Chipichape",
+                    "phone_number": "3151478543",
+                    "address": "Cra 15 # 15-15",
+                    "latitude": "3.476843",
+                    "longitude": "-76.526739",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "others",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_1_2_1.jpg",
+                        "headquarter_1_2_2.jpg"
+                    ]
+                },
+                {
+                    "name": "Sede centro",
+                    "phone_number": "3151478563",
+                    "address": "Cra 18 # 18-18",
+                    "latitude": "3.452074",
+                    "longitude": "-76.529170",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "others",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_1_3_1.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Rubio Barber Lounge",
+            "description": "Rubio Barber Lounge SA",
+            "created_by_user": "anthonyrubio",
+            "type": "employer",
+            "state": "available",
+            "picture":"company_2.jpg",
+            "headquarters": [
+                {
+                    "name": "Sede Sur",
+                    "phone_number": "3258741256",
+                    "address": "CLLE 1 # 1-1",
+                    "latitude": "3.381276",
+                    "longitude": "-76.529031",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "main",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_2_1_1.jpg",
+                        "headquarter_2_1_2.jpg"
+                    ]
+                },
+                {
+                    "name": "Sede Norte",
+                    "phone_number": "3258741288",
+                    "address": "CLLE 3 # 3-3",
+                    "latitude": "3.460455",
+                    "longitude": "-76.511848",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "others",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_2_2_1.jpg",
+                        "headquarter_2_2_2.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Yanez Barber Studio",
+            "description": "Yanez Barber Studio SA",
+            "created_by_user": "oswaldoyanez",
+            "type": "employer",
+            "state": "available",
+            "picture":"company_3.jpg",
+            "headquarters": [
+                {
+                    "name": "Sede Central",
+                    "phone_number": "3241785236",
+                    "address": "calle 3 # 10-10",
+                    "latitude": "3.450646",
+                    "longitude": "-76.524771",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "main",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_3_1_1.jpg",
+                        "headquarter_3_1_2.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Botero Nail Spa",
+            "description": "Botero Nail Spa SA",
+            "created_by_user": "camilabotero",
+            "type": "independent",
+            "state": "available",
+            "picture":"company_4.jpg",
+            "headquarters": [
+                {
+                    "name": "Sede Principal",
+                    "phone_number": "3257841256",
+                    "address": "avenida 5 # 10-10",
+                    "latitude": "3.476573",
+                    "longitude": "-76.498160",
+                    "rating_count": 0,
+                    "rating": 0,
+                    "geo_reference_city": "Cali",
+                    "type": "main",
+                    "state": "available",
+                    "country": "Colombia",
+                    "pictures":[
+                        "headquarter_4_1_1.jpg",
+                        "headquarter_4_1_2.jpg"
+                    ]
+                }
+            ]
+        }
+    ]
+}

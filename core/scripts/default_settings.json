@@ -1,0 +1,464 @@
+{
+    "categories_types": [
+        {
+            "code": "global_config",
+            "description": "Configuración global de la aplicación",
+            "types": [
+                {
+                    "code": "enable_cancellation_fees",
+                    "description": "false"
+                }
+            ]
+        },
+        {
+            "code": "type_company",
+            "description": "Categoría para los diferentes tipos de empresas",
+            "types": [
+                {
+                    "code": "independent",
+                    "description": "Independiente"
+                },
+                {
+                    "code": "employer",
+                    "description": "Empleador"
+                }
+            ]
+        },
+        {
+            "code": "status_company",
+            "description": "Categoría para los diferentes estados de las empresas",
+            "types": [
+                {
+                    "code": "creating",
+                    "description": "En creación"
+                },
+                {
+                    "code": "available",
+                    "description": "Disponible"
+                },
+                {
+                    "code": "unavailable",
+                    "description": "No disponible"
+                },
+                {
+                    "code": "on_vacation",
+                    "description": "En vacaciones"
+                }
+            ]
+        },
+        {
+            "code": "type_headquarter",
+            "description": "Categoría para los diferentes tipos de sedes de empresas",
+            "types": [
+                {
+                    "code": "main",
+                    "description": "Principal"
+                },
+                {
+                    "code": "others",
+                    "description": "Otras"
+                }
+            ]
+        },
+        {
+            "code": "status_headquarter",
+            "description": "Categoría para los diferentes estados de las sedes de empresas",
+            "types": [
+                {
+                    "code": "creating",
+                    "description": "En creación"
+                },
+                {
+                    "code": "available",
+                    "description": "Disponible"
+                },
+                {
+                    "code": "unavailable",
+                    "description": "No disponible"
+                },
+                {
+                    "code": "on_vacation",
+                    "description": "En vacaciones"
+                }
+            ]
+        },
+        {
+            "code": "type_file",
+            "description": "Categoría para los diferentes tipos de archivos",
+            "types": [
+                {
+                    "code": "main_image",
+                    "description": "Imagen principal"
+                },
+                {
+                    "code": "additional_image",
+                    "description": "Imagen adicional"
+                },
+                {
+                    "code": "profile_image",
+                    "description": "Imagen de perfil"
+                },
+                {
+                    "code": "cover_image",
+                    "description": "Imagen de portada"
+                },
+                {
+                    "code": "service_image",
+                    "description": "Imagen de servicio"
+                },
+                {
+                    "code": "icon",
+                    "description": "Icono"
+                }
+            ]
+        },
+        {
+            "code": "status_service_category",
+            "description": "Categoría para los diferentes estados de las categorías de servicios",
+            "types": [
+                {
+                    "code": "active",
+                    "description": "Activo"
+                },
+                {
+                    "code": "inactive",
+                    "description": "Inactivo"
+                }
+            ]
+        },
+        {
+            "code": "status_user",
+            "description": "Categoría para los diferentes estados de los usuarios",
+            "types": [
+                {
+                    "code": "creating",
+                    "description": "En creación"
+                },
+                {
+                    "code": "active",
+                    "description": "Activo"
+                },
+                {
+                    "code": "inactive",
+                    "description": "Inactivo"
+                }
+            ]
+        },
+        {
+            "code": "type_user",
+            "description": "Categoría para los diferentes tipos de usuarios",
+            "types": [
+                {
+                    "code": "admin",
+                    "description": "Administrador"
+                },
+                {
+                    "code": "user",
+                    "description": "Usuario"
+                }
+            ]
+        },
+        {
+            "code": "gender_user",
+            "description": "Categoría para los géneros",
+            "types": [
+                {
+                    "code": "male",
+                    "description": "Hombre"
+                },
+                {
+                    "code": "female",
+                    "description": "Mujer"
+                },
+                {
+                    "code": "no_specified",
+                    "description": "Prefiero no decirlo"
+                }
+            ]
+        },
+        {
+            "code": "login_of",
+            "description": "Categoría para los diferentes metodos de inicio de sesión",
+            "types": [
+                {
+                    "code": "by_gmail",
+                    "description": "Por gmail"
+                },
+                {
+                    "code": "by_credentials",
+                    "description": "Por credenciales"
+                }
+            ]
+        },
+        {
+            "code": "status_service",
+            "description": "Categoría para los diferentes estados de los servicios",
+            "types": [
+                {
+                    "code": "creating",
+                    "description": "En creación"
+                },
+                {
+                    "code": "available",
+                    "description": "Disponible"
+                },
+                {
+                    "code": "unavailable",
+                    "description": "No disponible"
+                },
+                {
+                    "code": "busy",
+                    "description": "Ocupado"
+                }
+            ]
+        },
+        {
+            "code": "address_user",
+            "description": "Categoría para los diferentes direcciones de los usuarios",
+            "types": [
+                {
+                    "code": "other",
+                    "description": "Otro"
+                },
+                {
+                    "code": "house",
+                    "description": "Casa"
+                },
+                {
+                    "code": "job",
+                    "description": "Trabajo"
+                }
+            ]
+        },
+        {
+            "code": "gender_service",
+            "description": "Categoría para los diferentes geños de los servicios",
+            "types": [
+                {
+                    "code": "male",
+                    "description": "Hombre"
+                },
+                {
+                    "code": "female",
+                    "description": "Mujer"
+                },
+                {
+                    "code": "kid",
+                    "description": "Niño"
+                },
+                {
+                    "code": "pet",
+                    "description": "Mascota"
+                },
+                {
+                    "code": "women_men",
+                    "description": "Hombre y mujer"
+                },
+                {
+                    "code": "any_person",
+                    "description": "Cualquiera persona"
+                },
+                {
+                    "code": "no_specified",
+                    "description": "Prefiero no decirlo"
+                }
+            ]
+        },
+        {
+            "code": "status_appointment",
+            "description": "Categoría para los diferentes estados de las citas",
+            "types": [
+                {
+                    "code": "pending_payment",
+                    "description": "Pendiente de Pago"
+                },
+                {
+                    "code": "active",
+                    "description": "Activa"
+                },
+                {
+                    "code": "in_progress",
+                    "description": "En curso"
+                },
+                {
+                    "code": "completed",
+                    "description": "Completada"
+                },
+                {
+                    "code": "cancelled",
+                    "description": "Cancelada"
+                }
+            ]
+        },
+        {
+            "code": "legal_content_category",
+            "description": "Categoría para los contenidos legales",
+            "types": [
+                {
+                    "code": "terms_and_conditions",
+                    "description": "Términos y Condiciones"
+                },
+                {
+                    "code": "privacy_policy",
+                    "description": "Política de Privacidad"
+                },
+                {
+                    "code": "service_fee_policy",
+                    "description": "Política de Comisiones y Multas"
+                },
+                {
+                    "code": "supplier_usage_notice",
+                    "description": "Aviso de Uso para Proveedores"
+                }
+            ]
+        },
+        {
+            "code": "status_legal_content",
+            "description": "Categoría para los estados de contenido legal",
+            "types": [
+                {
+                    "code": "active",
+                    "description": "Activo"
+                },
+                {
+                    "code": "inactive",
+                    "description": "Inactivo"
+                }
+            ]
+        }
+    ],
+    "week_days": [
+        {
+            "code": "lunes",
+            "description": "Lunes"
+        },
+        {
+            "code": "martes",
+            "description": "Martes"
+        },
+        {
+            "code": "miercoles",
+            "description": "Miércoles"
+        },
+        {
+            "code": "jueves",
+            "description": "Jueves"
+        },
+        {
+            "code": "viernes",
+            "description": "Viernes"
+        },
+        {
+            "code": "sabado",
+            "description": "Sábado"
+        },
+        {
+            "code": "domingo",
+            "description": "Domingo"
+        },
+        {
+            "code": "festivo",
+            "description": "Festivo"
+        }
+    ],
+    "amenities": [
+        {
+            "code": "icon_wifi",
+            "description": "Wifi",
+            "color": "f59c1a",
+            "icon_name": "icon_wifi.svg"
+        },
+        {
+            "code": "icon_snack",
+            "description": "Snacks",
+            "color": "f59c1a",
+            "icon_name": "icon_snack.svg"
+        },
+        {
+            "code": "icon_home_service",
+            "description": "Servicio a domicilio",
+            "color": "f59c1a",
+            "icon_name": "icon_home_service.svg"
+        },
+        {
+            "code": "icon_easy_access",
+            "description": "Acceso rápido",
+            "color": "f59c1a",
+            "icon_name": "icon_easy_access.svg"
+        },
+        {
+            "code": "icon_calendar",
+            "description": "Horario flexible",
+            "color": "f59c1a",
+            "icon_name": "icon_calendar.svg"
+        },
+        {
+            "code": "icon_child",
+            "description": "Adaptado para niños",
+            "color": "f59c1a",
+            "icon_name": "icon_child.svg"
+        },
+        {
+            "code": "icon_advice",
+            "description": "Sugerencias",
+            "color": "f59c1a",
+            "icon_name": "icon_advice.svg"
+        }
+    ],
+    "cancellation_rules": [
+        {
+            "min_hours": 24,
+            "penalty_pct": 0.0,
+            "fee_level": "low",
+            "description": "Cancelación gratuita (>24h)"
+        },
+        {
+            "min_hours": 10,
+            "penalty_pct": 0.1,
+            "fee_level": "low",
+            "description": "Multa 10% (>10h)"
+        },
+        {
+            "min_hours": 1,
+            "penalty_pct": 0.2,
+            "fee_level": "middle",
+            "description": "Multa 20% (>1h)"
+        },
+        {
+            "min_hours": 0,
+            "penalty_pct": 0.8,
+            "fee_level": "high",
+            "description": "Multa 80% (<=1h)"
+        }
+    ],
+    "legal_contents": [
+        {
+            "title": "Términos y Condiciones de Uso",
+            "content": "TÉRMINOS Y CONDICIONES DE USO — PonteGlam\nVersión 1.0 | Vigente desde enero de 2026\n\n1. IDENTIFICACIÓN DE LA PLATAFORMA\nPonteGlam es una aplicación móvil que actúa como intermediario digital entre usuarios que buscan servicios de belleza y proveedores de dichos servicios en Colombia. PonteGlam no presta directamente servicios de belleza ni emplea a los proveedores registrados.\n\n2. ACEPTACIÓN\nEl uso de la aplicación implica la aceptación expresa de estos términos. La aceptación se formaliza mediante el checkbox habilitado en la pantalla de registro.\n\n3. REGISTRO DE USUARIOS\nPara usar PonteGlam debes ser mayor de 15 años y proporcionar información verídica. Eres responsable de mantener la confidencialidad de tus credenciales.\n\n4. REGISTRO DE PROVEEDORES\nEl registro como proveedor es actualmente gratuito. PonteGlam se reserva el derecho de introducir en el futuro un modelo de monetización. Los proveedores serán notificados con mínimo 30 días de anticipación antes de cualquier cobro. El uso continuado tras la notificación implica aceptación.\n\n5. RESERVAS\nLa confirmación de una reserva constituye un acuerdo de prestación de servicios entre el usuario cliente y el proveedor, celebrado por medios electrónicos conforme a la Ley 527 de 1999. PonteGlam conserva el registro de cada reserva como evidencia de dicho acuerdo.\n\n6. PAGOS\nPonteGlam no procesa ni intermedia pagos en esta versión de la plataforma. Todas las transacciones se realizan directamente entre el cliente y el proveedor mediante efectivo u otros medios acordados entre las partes.\n\n7. CANCELACIONES\nLos usuarios pueden cancelar o reagendar sus citas directamente desde la aplicación. Se solicita hacerlo con al menos 2 horas de anticipación para no afectar al profesional. En esta versión no se aplican multas económicas por cancelación.\n\n8. RESPONSABILIDADES\nPonteGlam no es responsable de la calidad, veracidad o actualización de la información publicada por los proveedores. Dicha responsabilidad recae íntegramente en el proveedor. PonteGlam tampoco asume responsabilidad por incumplimientos del servicio, daños derivados del servicio prestado ni disputas económicas entre cliente y proveedor.\n\n9. CALIFICACIONES Y RESEÑAS\nLas reseñas deben basarse en experiencias reales. No se permite contenido falso, difamatorio u ofensivo. PonteGlam puede eliminar reseñas que incumplan estas condiciones.\n\n10. MODIFICACIONES\nPonteGlam puede modificar estos términos en cualquier momento. Los cambios se notificarán con mínimo 15 días de anticipación.\n\n11. LEY APLICABLE\nEstos términos se rigen por las leyes de la República de Colombia. Cualquier controversia se someterá a la jurisdicción de los jueces competentes de Cali, Colombia.",
+            "version": "1.0",
+            "type": "terms_and_conditions",
+            "state": "active"
+        },
+        {
+            "title": "Política de Privacidad y Tratamiento de Datos Personales",
+            "content": "POLÍTICA DE PRIVACIDAD Y TRATAMIENTO DE DATOS PERSONALES — PonteGlam\nVersión 1.0 | Vigente desde enero de 2026\n\nEn cumplimiento de la Ley 1581 de 2012 y el Decreto 1377 de 2013 de Colombia.\n\n1. RESPONSABLE DEL TRATAMIENTO\nPonteGlam, aplicación móvil de gestión y reserva de servicios de belleza, es responsable del tratamiento de los datos personales recolectados a través de la plataforma.\n\n2. DATOS QUE RECOLECTAMOS\nRecolectamos los siguientes datos personales:\n- Nombre completo y correo electrónico.\n- Foto de perfil e imágenes cargadas para portafolios o sedes.\n- Ubicación geográfica para mostrar servicios cercanos.\n- Historial de reservas y actividad en la app.\n- Información técnica del dispositivo (modelo, fabricante, versión de OS) recolectada mediante logs de diagnóstico para fines de seguridad, soporte técnico y mejora de la estabilidad.\n\n3. PERMISOS DE LA APLICACIÓN\nPara el correcto funcionamiento, la aplicación solicita acceso a:\n- Ubicación: Para localizar servicios de belleza y gestionar direcciones de prestación.\n- Cámara y Galería: Para cargar fotos de perfil y evidencia visual de servicios/sedes.\n- Notificaciones: Para enviar recordatorios de citas, confirmaciones y alertas de seguridad.\n- Estado de Red: Para garantizar el envío y recepción de datos con el servidor.\n\n4. FINALIDAD DEL TRATAMIENTO\nLos datos se utilizan para gestionar tu cuenta, facilitar las reservas, mejorar la experiencia de usuario y garantizar la seguridad técnica de la plataforma.\n\n5. PRINCIPIOS DEL TRATAMIENTO\nEl tratamiento se rige por los principios de legalidad, finalidad, libertad, veracidad, transparencia, acceso restringido, seguridad y confidencialidad.\n\n6. COMPARTICIÓN DE DATOS\nPonteGlam no vende ni arrienda tus datos. Los datos de contacto se comparten exclusivamente con el proveedor del servicio una vez confirmada la reserva.\n\n7. SEGURIDAD\nImplementamos cifrado HTTPS, protección de tokens y monitoreo de logs de seguridad para proteger tu información conforme a la Ley 1273 de 2009.\n\n8. DERECHOS DEL TITULAR\nTienes derecho a conocer, actualizar, rectificar y suprimir tus datos desde la sección de perfil de la aplicación.\n\n9. CONSENTIMIENTO\nAl registrarte, aceptas expresamente esta política. Se registra evidencia digital de tu aceptación.\n\n10. MODIFICACIONES\nCualquier cambio será notificado con mínimo 15 días de anticipación.",
+            "version": "1.0",
+            "type": "privacy_policy",
+            "state": "active"
+        },
+        {
+            "title": "Política de Comisiones y Multas",
+            "content": "POLÍTICA DE COMISIONES Y CANCELACIONES — PonteGlam\nVersión 1.0 | Vigente desde enero de 2026\n\n1. MODELO ACTUAL — VERSIÓN GRATUITA\nPonteGlam opera actualmente en su primera versión bajo un modelo completamente gratuito para proveedores y clientes. No se cobran comisiones por reserva, suscripciones ni tarifas de ningún tipo.\n\n2. MULTAS POR CANCELACIÓN\nEn esta versión no se aplican multas económicas por cancelación o reprogramación de citas. Se solicita a los usuarios cancelar con al menos 2 horas de anticipación como cortesía hacia el profesional, pero este incumplimiento no genera cargo económico alguno.\n\n3. COMISIONES POR SERVICIO\nPonteGlam no retiene ningún porcentaje sobre el valor de los servicios reservados a través de la plataforma en esta versión.\n\n4. MODELO FUTURO\nPonteGlam se reserva el derecho de implementar en versiones futuras:\n- Comisión por reserva completada\n- Planes de suscripción para proveedores\n- Multas por cancelaciones tardías reiteradas\n\nCualquier cambio en este modelo será comunicado con mínimo 30 días de anticipación a todos los proveedores y usuarios activos de la plataforma antes de su entrada en vigencia.\n\n5. PAGOS\nTodos los pagos se realizan directamente entre el cliente y el proveedor. PonteGlam no interviene en la transacción económica ni custodia dinero de ninguna de las partes en esta versión.",
+            "version": "1.0",
+            "type": "service_fee_policy",
+            "state": "active"
+        },
+        {
+            "title": "Aviso de Uso para Proveedores",
+            "content": "AVISO DE USO PARA PROVEEDORES — PonteGlam\nVersión 1.0 | Vigente desde enero de 2026\n\n1. MODELO ACTUAL\nPonteGlam opera actualmente bajo un modelo gratuito. La creación de tu perfil como proveedor, la publicación de servicios y la gestión de reservas no tienen costo alguno en esta versión.\n\n2. POSIBLES COBROS FUTUROS\nPonteGlam se reserva el derecho de implementar en versiones posteriores un modelo de monetización que podría incluir:\n- Comisión por reserva completada a través de la plataforma.\n- Planes de suscripción mensual o anual para proveedores.\n- Tarifas por funcionalidades premium o destacadas.\n\n3. COMPROMISO DE NOTIFICACIÓN\nCualquier cambio en el modelo de cobros será notificado a todos los proveedores activos con un mínimo de 30 días de anticipación antes de su entrada en vigencia. PonteGlam no realizará cobros retroactivos sin consentimiento previo.\n\n4. ACEPTACIÓN\nAl crear tu perfil como proveedor en PonteGlam, aceptas que has sido informado sobre la posibilidad de futuros cobros por el uso de la plataforma, y que serás notificado oportunamente antes de cualquier cambio.",
+            "version": "1.0",
+            "type": "supplier_usage_notice",
+            "state": "active"
+        }
+    ]
+}

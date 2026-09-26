@@ -1,0 +1,83 @@
+{% extends 'pqrs/base.html' %}
+{% block title %}PQRS Radicada — {{ pqrs.radicado }}{% endblock %}
+
+{% block content %}
+<div class="container--sm fade-in">
+
+  {% if pqrs %}
+  <div class="text-center mb-8">
+    <div style="font-size:3.5rem; margin-bottom:12px;">✅</div>
+    <h1 class="serif" style="font-size:2rem; color:var(--navy);">¡Solicitud radicada!</h1>
+    <p class="text-muted" style="margin-top:8px;">
+      Tu PQRS ha sido recibida exitosamente. Guarda tu código de radicado.
+    </p>
+  </div>
+
+  <div class="radicado-box mb-8">
+    <p class="radicado-box__label">Código de radicado</p>
+    <p class="radicado-box__code" id="radicado-code">{{ pqrs.radicado }}</p>
+    <button onclick="copiarRadicado()" class="btn btn--ghost" style="color:var(--amber-light);border-color:rgba(232,160,32,0.4);margin-top:16px;font-size:0.85rem;">
+      📋 Copiar código
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card__body">
+      <h3 class="serif" style="margin-bottom:16px;">Resumen de tu solicitud</h3>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <p class="detail-item__label">Tipo</p>
+          <p class="detail-item__value">{{ pqrs.get_tipo_display }}</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-item__label">Estado</p>
+          <p class="detail-item__value">
+            <span class="badge badge--info">{{ pqrs.get_estado_display }}</span>
+          </p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-item__label">Nombre</p>
+          <p class="detail-item__value">{{ pqrs.nombre_completo }}</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-item__label">Correo</p>
+          <p class="detail-item__value">{{ pqrs.email }}</p>
+        </div>
+      </div>
+      <div class="detail-full">
+        <p class="detail-item__label">Asunto</p>
+        <p class="detail-item__value">{{ pqrs.asunto }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert--warning mt-4">
+    ℹ️ Guarda este código. Lo necesitarás para consultar el estado de tu solicitud.
+  </div>
+
+  <div class="flex-center" style="gap:12px; margin-top:24px;">
+    <a href="{% url 'pqrs:consultar' %}" class="btn btn--ghost">🔍 Consultar estado</a>
+    <a href="{% url 'pqrs:crear' %}" class="btn btn--primary">+ Radicar otra</a>
+  </div>
+
+  {% else %}
+  <div class="alert alert--danger">
+    ⚠ No se encontró información del radicado. <a href="{% url 'pqrs:home' %}">Volver al inicio</a>.
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function copiarRadicado() {
+    const code = document.getElementById('radicado-code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = event.target;
+      btn.textContent = '✓ Copiado';
+      setTimeout(() => btn.textContent = '📋 Copiar código', 2000);
+    });
+  }
+</script>
+{% endblock %}

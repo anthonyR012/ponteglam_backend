@@ -1,0 +1,271 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="PonteGlam ERD" id="ponteglam-erd">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1760" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="table_User" value="User" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="220" height="194" as="geometry" />
+        </mxCell>
+        <mxCell id="User_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_User">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="User_full_name" value="full_name varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_User">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="User_email" value="email varchar [unique, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_User">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="User_phone" value="phone varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_User">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="User_password" value="password varchar [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_User">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="User_is_active" value="is_active boolean [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_User">
+          <mxGeometry y="146" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="User_type" value="type varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_User">
+          <mxGeometry y="170" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_UserAddress" value="UserAddress" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="294" width="220" height="146" as="geometry" />
+        </mxCell>
+        <mxCell id="UserAddress_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_UserAddress">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="UserAddress_user_id" value="user_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_UserAddress">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="UserAddress_address" value="address varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_UserAddress">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="UserAddress_latitude" value="latitude varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_UserAddress">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="UserAddress_longitude" value="longitude varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_UserAddress">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_Appointment" value="Appointment" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="220" height="218" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_user_id" value="user_id integer [FK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_price" value="price decimal [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_status" value="status varchar [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_payment_method" value="payment_method varchar [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_is_home_service" value="is_home_service boolean [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="146" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_home_address_id" value="home_address_id integer [FK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="170" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Appointment_created_at" value="created_at datetime [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Appointment">
+          <mxGeometry y="194" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_Company" value="Company" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="220" height="146" as="geometry" />
+        </mxCell>
+        <mxCell id="Company_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_Company">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Company_created_by_user_id" value="created_by_user_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Company">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Company_name" value="name varchar [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Company">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Company_description" value="description text" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Company">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Company_is_verified" value="is_verified boolean [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Company">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_Headquarter" value="Headquarter" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="320" y="246" width="220" height="218" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_company_id" value="company_id integer [FK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_name" value="name varchar [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_address" value="address varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_latitude" value="latitude varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_longitude" value="longitude varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="146" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_phone_number" value="phone_number varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="170" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Headquarter_rating" value="rating float" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Headquarter">
+          <mxGeometry y="194" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_AppointmentService" value="AppointmentService" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="320" y="524" width="220" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="AppointmentService_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_AppointmentService">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="AppointmentService_appointment_id" value="appointment_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_AppointmentService">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="AppointmentService_service_id" value="service_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_AppointmentService">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="AppointmentService_worker_id" value="worker_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_AppointmentService">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="AppointmentService_start_time" value="start_time datetime [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_AppointmentService">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="AppointmentService_end_time" value="end_time datetime [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_AppointmentService">
+          <mxGeometry y="146" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_Worker" value="Worker" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="220" height="122" as="geometry" />
+        </mxCell>
+        <mxCell id="Worker_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_Worker">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Worker_user_id" value="user_id integer [FK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Worker">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Worker_headquarter_id" value="headquarter_id integer [FK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Worker">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Worker_name" value="name varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Worker">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_Service" value="Service" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="600" y="222" width="220" height="194" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_Service">
+          <mxGeometry y="26" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_headquarter_id" value="headquarter_id integer [FK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Service">
+          <mxGeometry y="50" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_name" value="name varchar [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Service">
+          <mxGeometry y="74" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_description" value="description varchar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Service">
+          <mxGeometry y="98" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_price" value="price decimal [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Service">
+          <mxGeometry y="122" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_only_home_service" value="only_home_service boolean [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Service">
+          <mxGeometry y="146" width="220" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="Service_home_service_price" value="home_service_price decimal" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_Service">
+          <mxGeometry y="170" width="220" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_WorkerService" value="WorkerService" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="880" y="40" width="240" height="122" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerService_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_WorkerService">
+          <mxGeometry y="26" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerService_worker_id" value="worker_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerService">
+          <mxGeometry y="50" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerService_service_id" value="service_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerService">
+          <mxGeometry y="74" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerService_is_pending_removal" value="is_pending_removal boolean [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerService">
+          <mxGeometry y="98" width="240" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="table_WorkerAvailability" value="WorkerAvailability" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=0;resizeParentMax=0;resizeLast=1;collapsible=0;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="880" y="198" width="240" height="146" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerAvailability_id" value="id integer [PK]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontStyle=4;" vertex="1" parent="table_WorkerAvailability">
+          <mxGeometry y="26" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerAvailability_worker_id" value="worker_id integer [FK, not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerAvailability">
+          <mxGeometry y="50" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerAvailability_weekday" value="weekday integer [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerAvailability">
+          <mxGeometry y="74" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerAvailability_start_time" value="start_time time [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerAvailability">
+          <mxGeometry y="98" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="WorkerAvailability_end_time" value="end_time time [not null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;" vertex="1" parent="table_WorkerAvailability">
+          <mxGeometry y="122" width="240" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_UserAddress_User" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="UserAddress_user_id" target="table_User">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Company_User" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Company_created_by_user_id" target="table_User">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Headquarter_Company" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Headquarter_company_id" target="table_Company">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Service_Headquarter" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Service_headquarter_id" target="table_Headquarter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Worker_User" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Worker_user_id" target="table_User">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Worker_Headquarter" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Worker_headquarter_id" target="table_Headquarter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Appointment_User" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Appointment_user_id" target="table_User">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Appointment_UserAddress" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="Appointment_home_address_id" target="table_UserAddress">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AppointmentService_Appointment" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="AppointmentService_appointment_id" target="table_Appointment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AppointmentService_Service" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="AppointmentService_service_id" target="table_Service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AppointmentService_Worker" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="AppointmentService_worker_id" target="table_Worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_WorkerService_Worker" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="WorkerService_worker_id" target="table_Worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_WorkerService_Service" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="WorkerService_service_id" target="table_Service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_WorkerAvailability_Worker" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;startArrow=ERmany;startFill=0;endArrow=ERone;endFill=0;rounded=0;" edge="1" parent="1" source="WorkerAvailability_worker_id" target="table_Worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

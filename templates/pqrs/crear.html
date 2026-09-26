@@ -1,0 +1,127 @@
+{% extends 'pqrs/base.html' %}
+{% block title %}Radicar PQRS{% endblock %}
+
+{% block content %}
+<div class="container--sm fade-in">
+
+  <div class="card">
+    <div class="card__header">
+      <h2>📝 Radicar solicitud</h2>
+      <p>Todos los campos marcados con * son obligatorios</p>
+    </div>
+
+    <div class="card__body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Tipo -->
+        <div class="form-group">
+          <label class="form-label" for="{{ form.tipo.id_for_label }}">
+            Tipo de solicitud <span class="required">*</span>
+          </label>
+          {{ form.tipo }}
+          {% if form.tipo.errors %}
+            <p class="form-error">⚠ {{ form.tipo.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Nombre y documento -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.nombre_completo.id_for_label }}">
+              Nombre completo <span class="required">*</span>
+            </label>
+            {{ form.nombre_completo }}
+            {% if form.nombre_completo.errors %}
+              <p class="form-error">⚠ {{ form.nombre_completo.errors|join:", " }}</p>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.documento_identidad.id_for_label }}">
+              Documento de identidad
+            </label>
+            {{ form.documento_identidad }}
+          </div>
+        </div>
+
+        <!-- Email y teléfono -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.email.id_for_label }}">
+              Correo electrónico <span class="required">*</span>
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+              <p class="form-error">⚠ {{ form.email.errors|join:", " }}</p>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.telefono.id_for_label }}">
+              Teléfono
+            </label>
+            {{ form.telefono }}
+          </div>
+        </div>
+
+        <!-- Asunto -->
+        <div class="form-group">
+          <label class="form-label" for="{{ form.asunto.id_for_label }}">
+            Asunto <span class="required">*</span>
+          </label>
+          {{ form.asunto }}
+          {% if form.asunto.errors %}
+            <p class="form-error">⚠ {{ form.asunto.errors|join:", " }}</p>
+          {% endif %}
+          <p class="form-hint">Resuma su solicitud en una frase corta.</p>
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group">
+          <label class="form-label" for="{{ form.descripcion.id_for_label }}">
+            Descripción <span class="required">*</span>
+          </label>
+          {{ form.descripcion }}
+          {% if form.descripcion.errors %}
+            <p class="form-error">⚠ {{ form.descripcion.errors|join:", " }}</p>
+          {% endif %}
+          <p class="form-hint">Mínimo 20 caracteres. Sea lo más específico posible.</p>
+        </div>
+
+        <div class="alert alert--warning">
+          ℹ️ Al enviar este formulario recibirá un <strong>código de radicado</strong> que le permitirá hacer seguimiento a su solicitud.
+        </div>
+
+        <div class="flex" style="gap:12px; justify-content:flex-end;">
+          <a href="{% url 'pqrs:home' %}" class="btn btn--ghost">Cancelar</a>
+          <button type="submit" class="btn btn--primary btn--lg">
+            Enviar solicitud →
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Marca visualmente los campos con error de Django
+  document.querySelectorAll('.form-error').forEach(el => {
+    const input = el.closest('.form-group').querySelector('input, select, textarea');
+    if (input) input.classList.add('error');
+  });
+
+  // Contador de caracteres en descripción
+  const textarea = document.querySelector('textarea[name="descripcion"]');
+  if (textarea) {
+    const hint = textarea.nextElementSibling;
+    textarea.addEventListener('input', () => {
+      const n = textarea.value.length;
+      hint.textContent = `${n} caracteres${n < 20 ? ` — faltan ${20 - n}` : ' ✓'}`;
+      hint.style.color = n < 20 ? '#e05252' : '#1a7a48';
+    });
+  }
+</script>
+{% endblock %}

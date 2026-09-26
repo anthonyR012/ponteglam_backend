@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        REDIS_URL = "redis://192.168.10.104:6379/0"
+        POSTGRES_HOST = "192.168.10.104"
+        POSTGRES_PORT = "5432"
+        POSTGRES_DB = "dbpg"
+        POSTGRES_USER = "postgres"
+        POSTGRES_PASSWORD = "postgres"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/tu-repositorio.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("mi-imagen-django:${env.BUILD_ID}")
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    docker.image("mi-imagen-django:${env.BUILD_ID}").inside {
+                        sh 'python manage.py test'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    docker-compose up -d --build
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

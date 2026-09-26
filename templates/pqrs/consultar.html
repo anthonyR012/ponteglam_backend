@@ -1,0 +1,138 @@
+{% extends 'pqrs/base.html' %}
+{% block title %}Consultar PQRS{% endblock %}
+
+{% block content %}
+<div class="container--sm">
+
+  <div class="card fade-in">
+    <div class="card__header">
+      <h2>🔍 Consultar solicitud</h2>
+      <p>Ingresa tu código de radicado para ver el estado actual</p>
+    </div>
+    <div class="card__body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label" for="{{ form.radicado.id_for_label }}">
+            Código de radicado
+          </label>
+          {{ form.radicado }}
+          {% if form.radicado.errors %}
+            <p class="form-error">⚠ {{ form.radicado.errors|join:", " }}</p>
+          {% endif %}
+          <p class="form-hint">Ej: PQR-202501-AB12CD</p>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">
+          Buscar solicitud →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  {% if buscado %}
+    {% if pqrs %}
+    <!-- Resultado encontrado -->
+    <div class="card mt-8 fade-in">
+      <div class="card__header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+        <div>
+          <p style="color:var(--gray-300); font-size:0.8rem; margin-bottom:4px;">Radicado</p>
+          <h2 style="font-size:1.4rem; letter-spacing:0.03em;">{{ pqrs.radicado }}</h2>
+        </div>
+        <span class="badge badge--{{ pqrs.estado_color }}" style="font-size:0.85rem; padding:6px 16px;">
+          {{ pqrs.get_estado_display }}
+        </span>
+      </div>
+
+      <!-- Timeline de estado -->
+      {% with estados='RECIBIDO,EN_PROCESO,RESUELTO,CERRADO,RECHAZADO' %}
+      <div style="background:var(--off-white); border-bottom:1px solid var(--gray-100);">
+        <div class="timeline">
+          {% for estado_key in estados.split|default_if_none:'' %}
+          {% endfor %}
+          <!-- Renderizado manual del timeline -->
+          {% with e=pqrs.estado %}
+          <div class="timeline-step {% if e == 'RECIBIDO' %}active{% elif e != 'RECIBIDO' %}done{% endif %}">
+            <div class="timeline-dot">{% if e != 'RECIBIDO' %}✓{% endif %}</div>
+            <span class="timeline-label">Recibido</span>
+          </div>
+          <div class="timeline-step {% if e == 'EN_PROCESO' %}active{% elif e == 'RESUELTO' or e == 'CERRADO' %}done{% endif %}">
+            <div class="timeline-dot">{% if e == 'RESUELTO' or e == 'CERRADO' %}✓{% endif %}</div>
+            <span class="timeline-label">En proceso</span>
+          </div>
+          <div class="timeline-step {% if e == 'RESUELTO' %}active{% elif e == 'CERRADO' %}done{% endif %}">
+            <div class="timeline-dot">{% if e == 'CERRADO' %}✓{% endif %}</div>
+            <span class="timeline-label">Resuelto</span>
+          </div>
+          <div class="timeline-step {% if e == 'CERRADO' %}active{% elif e == 'RECHAZADO' %}active{% endif %}">
+            <div class="timeline-dot"></div>
+            <span class="timeline-label">{% if e == 'RECHAZADO' %}Rechazado{% else %}Cerrado{% endif %}</span>
+          </div>
+          {% endwith %}
+        </div>
+      </div>
+      {% endwith %}
+
+      <div class="card__body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <p class="detail-item__label">Tipo</p>
+            <p class="detail-item__value">{{ pqrs.get_tipo_display }}</p>
+          </div>
+          <div class="detail-item">
+            <p class="detail-item__label">Fecha de radicado</p>
+            <p class="detail-item__value">{{ pqrs.created_at|date:"d/m/Y H:i" }}</p>
+          </div>
+          <div class="detail-item">
+            <p class="detail-item__label">Nombre</p>
+            <p class="detail-item__value">{{ pqrs.nombre_completo }}</p>
+          </div>
+          <div class="detail-item">
+            <p class="detail-item__label">Última actualización</p>
+            <p class="detail-item__value">{{ pqrs.updated_at|date:"d/m/Y H:i" }}</p>
+          </div>
+        </div>
+
+        <div class="detail-full">
+          <p class="detail-item__label">Asunto</p>
+          <p class="detail-item__value">{{ pqrs.asunto }}</p>
+        </div>
+
+        <div class="detail-full">
+          <p class="detail-item__label">Descripción</p>
+          <p class="detail-item__value" style="white-space:pre-line; color:var(--gray-700);">{{ pqrs.descripcion }}</p>
+        </div>
+
+        {% if pqrs.tiene_respuesta %}
+        <div class="detail-full" style="background:linear-gradient(135deg, rgba(15,31,61,0.04), rgba(36,59,112,0.06)); border-radius:var(--radius-sm);">
+          <p class="detail-item__label" style="color:var(--navy-soft);">✅ Respuesta oficial</p>
+          <p class="detail-item__value" style="white-space:pre-line; margin-top:8px;">{{ pqrs.respuesta }}</p>
+        </div>
+        {% else %}
+        <div class="alert alert--warning" style="margin-top:16px;">
+          ⏳ Tu solicitud aún está siendo procesada. Vuelve pronto para ver la respuesta.
+        </div>
+        {% endif %}
+
+        <div class="flex-center mt-4">
+          <a href="{% url 'pqrs:detalle' pqrs.radicado %}" class="btn btn--ghost">
+            Ver detalle completo →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- No encontrado -->
+    <div class="card mt-8 fade-in">
+      <div class="card__body text-center" style="padding:40px;">
+        <div style="font-size:3rem; margin-bottom:16px;">🔎</div>
+        <h3 class="serif" style="margin-bottom:8px;">No encontramos ese radicado</h3>
+        <p class="text-muted">Verifica que el código esté bien escrito. Es sensible a mayúsculas.</p>
+        <p class="text-muted mt-4" style="font-size:0.85rem;">Ej: <strong>PQR-202501-AB12CD</strong></p>
+      </div>
+    </div>
+    {% endif %}
+  {% endif %}
+
+</div>
+{% endblock %}

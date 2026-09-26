@@ -1,0 +1,107 @@
+sudo apt install python3-certbot-apache
+This will install all the required packages for the certbot.
+
+Once the installation process finished. Run the below command to request let’s encrypt certificate authority to issue certificate for our domain webhost.tecadmin.net. You can add multiple domains or subdomains using separate “-d” parameters.
+
+certbot -d webhost.tecadmin.net
+Wizard will ask your email address to send your updates. Then accept Terms of Service to continue. Below is the complete logs of command:
+
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator apache, Installer apache
+Enter email address (used for urgent renewal and security notices) (Enter 'c' to
+cancel): webmaster@tecadmin.net
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
+agree in order to register with the ACME server at
+https://acme-v02.api.letsencrypt.org/directory
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(A)gree/(C)ancel: A
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing to share your email address with the Electronic Frontier
+Foundation, a founding partner of the Let's Encrypt project and the non-profit
+organization that develops Certbot? We'd like to send you email about our work
+encrypting the web, EFF news, campaigns, and ways to support digital freedom.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+Obtaining a new certificate
+Performing the following challenges:
+http-01 challenge for webhost.tecadmin.net
+Enabled Apache rewrite module
+Waiting for verification...
+Cleaning up challenges
+Created an SSL vhost at /etc/apache2/sites-available/webhost.tecadmin.net-le-ssl.conf
+Enabled Apache socache_shmcb module
+Enabled Apache ssl module
+Deploying Certificate to VirtualHost /etc/apache2/sites-available/webhost.tecadmin.net-le-ssl.conf
+Enabling available site: /etc/apache2/sites-available/webhost.tecadmin.net-le-ssl.conf
+
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: No redirect - Make no further changes to the webserver configuration.
+2: Redirect - Make all requests redirect to secure HTTPS access. Choose this for
+new sites, or if you're confident your site works on HTTPS. You can undo this
+change by editing your web server's configuration.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+Enabled Apache rewrite module
+Redirecting vhost in /etc/apache2/sites-enabled/webhost.tecadmin.net.conf to ssl vhost in /etc/ap                         ache2/sites-available/webhost.tecadmin.net-le-ssl.conf
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Congratulations! You have successfully enabled https://webhost.tecadmin.net
+
+You should test your configuration at:
+https://www.ssllabs.com/ssltest/analyze.html?d=webhost.tecadmin.net
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/webhost.tecadmin.net/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/webhost.tecadmin.net/privkey.pem
+   Your cert will expire on 2020-07-25. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot again
+   with the "certonly" option. To non-interactively renew *all* of
+   your certificates, run "certbot renew"
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+You have successfully configured you domain with SSL certificate. Now, you can access your domain over https protocol as shown in the screenshot below:
+
+Apache with Lets encrypt SSL on ubuntu 20.04
+
+Step 5 — Adjust Firewall Rules
+You can use the service name like “http” or “https” to allow in UFW. To open HTTP and HTTPS port in FirewallD run the below commands:
+
+sudo ufw allow https
+Step 6 — Manage Apache Service
+Now, you have your Apache web server up and running, let’s go with the Apache service management commands.
+
+To stop Apache web server, type:
+
+sudo systemctl stop apache2
+To start Apache web server (if stopped), type:
+
+sudo systemctl start apache2
+
+
+
+SI OCURREN ERRORES CON EL DAEMON
+
+
+The way to get cerbot to do this for you and avoid the error without changing your config structure is to comment out the offending line. After certbot succeeds, you'll then need to edit the config files manually to uncomment the lines and make sure you choose a new daemon process name for the new HTTPS config. So, in this case you should:
+
+Put a # in front of the line starting with WSGIDaemonProcess.
+Run cerbot again and ask it to attempt to reinstall the existing cert for you. It will succeed this time.
+Edit the original configuration file and uncomment the WSGIDaemonProcess line.
+Edit the new configuration file that certbot created for you and uncomment the line (certbot will have copied the entire original config file for you, including any comments).
+You'll need to rename the daemon process in this file since you can't use the same name in two different virtual hosts; I'd recommend just adding an s to the name for secure: name -> names
+Restart Apache.
