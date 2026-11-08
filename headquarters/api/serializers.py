@@ -1,8 +1,9 @@
 import logging
 import re
 
-from rest_framework import serializers
+from django.db.models import Q
 from django.utils.html import strip_tags
+from rest_framework import serializers
 
 from headquarters import models
 from companies.api.serializers import CompanyBasicSerializer, sanitize_text
@@ -152,6 +153,7 @@ class HeadquarterWithServicesSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         category = self.context.get('category')
         additional_filters = self.context.get('additional_filters')
+        search = self.context.get('search')
 
         services = obj.headquarter_service.values_list('service', flat=True)
 
@@ -165,10 +167,19 @@ class HeadquarterWithServicesSerializer(serializers.ModelSerializer):
         if category:
             filters['service_category__pk'] = category
 
+        if self.context.get('only_available'):
+            filters['state__code'] = 'available'
+
+        services_qs = Service.objects.filter(**filters)
+
+        # Si la búsqueda coincide con el nombre de la sede se muestran todos sus servicios.
+        if search and search.lower() not in obj.name.lower():
+            services_qs = services_qs.filter(
+                Q(name__icontains=search) | Q(description__icontains=search)
+            )
+
         serialized_services = ServiceSerializer(
-            Service.objects.filter(
-                **filters
-            ).distinct(),
+            services_qs.distinct(),
             many=True,
             context={'request': request, 'headquarter': obj}
         ).data

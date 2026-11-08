@@ -53,6 +53,10 @@ router.register(
     basename='reschedule-appointment'
 )
 router.register(
+    r'list-reschedule-slots', views.ListRescheduleSlots,
+    basename='list-reschedule-slots'
+)
+router.register(
     r'update-appointment-status', views.UpdateAppointmentStatus,
     basename='update-appointment-status'
 )

@@ -19,6 +19,15 @@ class ServiceCategoryManager(models.Manager):
         }).distinct()
 
 
+class AppointmentManager(models.Manager):
+
+    def owned_by_supplier(self, user):
+        """Citas de servicios creados por el proveedor."""
+        return self.get_queryset().filter(
+            appointment_service__service__created_by_user_id=user.pk
+        ).distinct()
+
+
 class ServiceManager(models.Manager):
     """
     Manager for the Service model.

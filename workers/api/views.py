@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 from django.db.models import Q
 from django.utils import timezone
 from django.conf import settings
@@ -13,13 +13,15 @@ from django.conf import settings
 # Local Modules
 from core.utils import get_local_time
 from workers import models
+from workers.availability import (
+    compute_available_slots, get_service_duration, group_slots_response
+)
 from workers.api import serializers
-from core import models as core_models
 from core.permissions import (
     verify_headquarter_ownership, ownership_denied_response, not_found_response
 )
 from headquarters.models import (
-    Headquarter, HeadquarterWorker, HeadquaterWeekDayTimeConfiguration
+    Headquarter, HeadquarterWorker
 )
 from users.models import User
 from services.models import WorkerService, AppointmentService, Service
@@ -124,10 +126,6 @@ class ListAvailableSlots(viewsets.ViewSet):
         else:
             start_date = timezone.localdate()
 
-        target_dates = [
-            start_date + timedelta(days=i) for i in range(days)
-        ]
-
         try:
             service = Service.objects.get(pk=service_id)
         except Service.DoesNotExist:
@@ -136,29 +134,6 @@ class ListAvailableSlots(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Service duration from TimeConfigurationService
-        try:
-            time_conf = service.time_configuration_service.select_related(
-                'time_configuration'
-            ).first()
-            if time_conf and time_conf.time_configuration:
-                tc = time_conf.time_configuration
-                hours = getattr(tc, 'hours', 0) or 0
-                minutes = getattr(tc, 'minutes', 0) or 0
-                total_seconds = hours * 3600 + minutes * 60
-                duration = (
-                    timedelta(seconds=total_seconds)
-                    if total_seconds > 0
-                    else timedelta(minutes=30)
-                )
-            else:
-                duration = timedelta(minutes=30)
-        except Exception:
-            duration = timedelta(minutes=30)
-
-        if duration.total_seconds() == 0:
-            duration = timedelta(minutes=30)
-
         worker_qs = WorkerService.objects.filter(
             service=service,
             is_pending_removal=False
@@ -166,168 +141,18 @@ class ListAvailableSlots(viewsets.ViewSet):
         if worker_id:
             worker_qs = worker_qs.filter(worker_id=worker_id)
 
-        end_date = start_date + timedelta(days=days)
-        booked_slots = AppointmentService.objects.filter(
-            worker__in=[ws.worker for ws in worker_qs],
-            start_time__date__gte=start_date,
-            start_time__date__lt=end_date,
-            appointment__status__in=['pending', 'active', 'completed'],
-        ).values_list('worker_id', 'start_time', 'end_time')
-
-        worker_bookings = {}
-        for w_id, b_start, b_end in booked_slots:
-            worker_bookings.setdefault(w_id, []).append((b_start, b_end))
-
-        # Manual blocks (WorkerBlock)
-        manual_blocks_qs = models.WorkerBlock.objects.filter(
-            worker__in=[ws.worker for ws in worker_qs],
-            start_time__lt=timezone.make_aware(datetime.combine(end_date, time.max)),
-            end_time__gt=timezone.make_aware(datetime.combine(start_date, time.min))
-        ).values_list('worker_id', 'start_time', 'end_time')
-
-        worker_manual_blocks = {}
-        for w_id, m_start, m_end in manual_blocks_qs:
-            worker_manual_blocks.setdefault(w_id, []).append((m_start, m_end))
-
-        # User's existing bookings to prevent overlaps
-        user_bookings = []
-        if request.user.is_authenticated:
-            user_bookings = AppointmentService.objects.filter(
-                appointment__user=request.user,
-                start_time__date__gte=start_date,
-                start_time__date__lt=end_date,
-                appointment__status__in=['pending', 'active'],
-            ).values_list('start_time', 'end_time')
-
-        now = timezone.now()
-        grouped = {}
-
-        for target_date in target_dates:
-            weekday_int = target_date.weekday()  # 0=Monday, 6=Sunday
-
-            for worker_service in worker_qs:
-                worker = worker_service.worker
-
-                availabilities = models.WorkerAvailability.objects.filter(
-                    worker=worker,
-                    weekday=weekday_int,
-                )
-
-                if availabilities.exists():
-                    schedules = [
-                        (av.start_time, av.end_time) for av in availabilities
-                    ]
-                else:
-                    # Fallback: headquarter schedule configured by the owner
-                    target_hq_id = head_quarter_id
-                    if not target_hq_id:
-                        hq_worker = HeadquarterWorker.objects.filter(
-                            worker=worker
-                        ).first()
-                        if hq_worker:
-                            target_hq_id = hq_worker.headquarter_id
-
-                    schedules = []
-                    if target_hq_id:
-                        # weekday choices in core are lowercase spanish names
-                        weekday_mapping = {
-                            0: 'lunes', 1: 'martes', 2: 'miercoles',
-                            3: 'jueves', 4: 'viernes',
-                            5: 'sabado', 6: 'domingo',
-                        }
-                        weekday_code = weekday_mapping.get(weekday_int)
-
-                        hq_schedules = (
-                            HeadquaterWeekDayTimeConfiguration.objects.filter(
-                                headquarter_id=target_hq_id,
-                                week_day_time_configuration__week_day__code=(
-                                    weekday_code
-                                ),
-                            ).select_related('week_day_time_configuration')
-                        )
-
-                        for hq_av in hq_schedules:
-                            hours = (
-                                core_models.HourWeekDayTimeConfiguration
-                                .objects.filter(
-                                    week_day_time_configuration=(
-                                        hq_av.week_day_time_configuration
-                                    )
-                                )
-                            )
-                            for h in hours:
-                                schedules.append((h.start_time, h.end_time))
-
-                    if not schedules:
-                        # Final fallback: standard 8am–5pm schedule
-                        schedules = [(time(8, 0), time(17, 0))]
-
-                bookings = worker_bookings.get(worker.id, [])
-                date_key = target_date.strftime("%Y-%m-%d")
-
-                for sched_start, sched_end in schedules:
-                    schedule_start = timezone.make_aware(
-                        datetime.combine(target_date, sched_start)
-                    )
-                    schedule_end = timezone.make_aware(
-                        datetime.combine(target_date, sched_end)
-                    )
-
-                    current_time = schedule_start
-
-                    while current_time + duration <= schedule_end:
-                        slot_end = current_time + duration
-
-                        if current_time < now:
-                            current_time += timedelta(minutes=30)
-                            continue
-
-                        is_free = True
-                        for b_start, b_end in bookings:
-                            if not (slot_end <= b_start or current_time >= b_end):
-                                is_free = False
-                                break
-                        
-                        if is_free and user_bookings:
-                            for ub_start, ub_end in user_bookings:
-                                if not (slot_end <= ub_start or current_time >= ub_end):
-                                    is_free = False
-                                    break
-
-                        if is_free:
-                            # Check manual blocks
-                            m_blocks = worker_manual_blocks.get(worker.id, [])
-                            for m_start, m_end in m_blocks:
-                                if not (slot_end <= m_start or current_time >= m_end):
-                                    is_free = False
-                                    break
-
-                        if is_free:
-                            grouped.setdefault(date_key, []).append({
-                                'worker_id': worker.id,
-                                'worker_name': str(worker),
-                                'start_time': current_time,
-                                'end_time': slot_end,
-                                'only_home_service': service.only_home_service,
-                                'home_service_price': (
-                                    service.home_service_price
-                                ),
-                            })
-
-                        current_time += timedelta(minutes=30)
-
-        response_data = [
-            {
-                'date': date_key,
-                'slots': sorted(
-                    slots, key=lambda s: s['start_time']
-                ),
-            }
-            for date_key, slots in sorted(grouped.items())
-        ]
+        grouped = compute_available_slots(
+            service=service,
+            workers=[ws.worker for ws in worker_qs],
+            start_date=start_date,
+            days=days,
+            duration=get_service_duration(service),
+            headquarter_id=head_quarter_id,
+            client=request.user,
+        )
 
         serializer = serializers.AvailableDateWithSlotsSerializer(
-            response_data, many=True
+            group_slots_response(grouped), many=True
         )
         return Response(
             {'success': serializer.data}, status=status.HTTP_200_OK

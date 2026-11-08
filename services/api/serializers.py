@@ -484,25 +484,9 @@ class AppointmentListSerializer(serializers.ModelSerializer):
         ]
 
     def get_can_reschedule(self, obj):
-        if obj.status not in [
-            models.Appointment.STATUS_PENDING,
-            models.Appointment.STATUS_ACTIVE,
-        ]:
-            return False
-
-        if obj.reschedule_count >= 1:
-            return False
-
-        from django.utils import timezone
-        from datetime import timedelta
-        first_service = obj.appointment_service.first()
-        if not first_service or not first_service.start_time:
-            return False
-
-        if first_service.start_time < timezone.now() + timedelta(hours=10):
-            return False
-
-        return True
+        return obj.reschedule_block_reason(
+            by_supplier=self.context.get('as_supplier', False)
+        ) is None
 
     def get_reschedule_message(self, obj):
         if obj.status not in [
@@ -510,18 +494,9 @@ class AppointmentListSerializer(serializers.ModelSerializer):
             models.Appointment.STATUS_ACTIVE,
         ]:
             return None
-
-        if obj.reschedule_count >= 1:
-            return "Ya has agotado el límite de 1 reprogramación para esta cita."
-
-        from django.utils import timezone
-        from datetime import timedelta
-        first_service = obj.appointment_service.first()
-        if first_service and first_service.start_time:
-            if first_service.start_time < timezone.now() + timedelta(hours=10):
-                return "No puedes reprogramar faltando menos de 10 horas para la cita."
-
-        return None
+        return obj.reschedule_block_reason(
+            by_supplier=self.context.get('as_supplier', False)
+        )
 
 
 class AppointmentDetailSerializer(serializers.ModelSerializer):
@@ -622,27 +597,9 @@ class AppointmentDetailSerializer(serializers.ModelSerializer):
         return None
 
     def get_can_reschedule(self, obj):
-        if obj.status not in [
-            models.Appointment.STATUS_PENDING,
-            models.Appointment.STATUS_ACTIVE,
-        ]:
-            return False
-
-        # Max 1 reschedule
-        if obj.reschedule_count >= 1:
-            return False
-
-        # Min 10 hours notice
-        from django.utils import timezone
-        from datetime import timedelta
-        first_service = obj.appointment_service.first()
-        if not first_service or not first_service.start_time:
-            return False
-
-        if first_service.start_time < timezone.now() + timedelta(hours=10):
-            return False
-
-        return True
+        return obj.reschedule_block_reason(
+            by_supplier=self.context.get('as_supplier', False)
+        ) is None
 
     def get_reschedule_message(self, obj):
         if obj.status not in [
@@ -650,34 +607,24 @@ class AppointmentDetailSerializer(serializers.ModelSerializer):
             models.Appointment.STATUS_ACTIVE,
         ]:
             return None
-
-        if obj.reschedule_count >= 1:
-            return "Ya has agotado el límite de 1 reprogramación para esta cita."
-
-        from django.utils import timezone
-        from datetime import timedelta
-        first_service = obj.appointment_service.first()
-        if first_service and first_service.start_time:
-            if first_service.start_time < timezone.now() + timedelta(hours=10):
-                return "No puedes reprogramar faltando menos de 10 horas para la cita."
-
-        return None
+        return obj.reschedule_block_reason(
+            by_supplier=self.context.get('as_supplier', False)
+        )
 
     def get_can_review(self, obj):
         return obj.status == models.Appointment.STATUS_COMPLETED
 
 
 class RescheduleAppointmentSerializer(serializers.Serializer):
+    """La hora fin la calcula el backend; `new_end_time` se acepta por compatibilidad y se ignora."""
+
     new_start_time = serializers.DateTimeField(
         required=True, input_formats=['iso-8601']
     )
     new_end_time = serializers.DateTimeField(
-        required=True, input_formats=['iso-8601']
+        required=False, input_formats=['iso-8601']
     )
     worker_id = serializers.IntegerField(required=False, allow_null=True)
 
     def validate_new_start_time(self, value):
-        return _validate_aware(value)
-
-    def validate_new_end_time(self, value):
         return _validate_aware(value)

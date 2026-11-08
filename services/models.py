@@ -1,7 +1,11 @@
 # Third-party Libraries
+from datetime import timedelta
+
 from django.db import models
 from django.utils import timezone
-from services.managers import ServiceCategoryManager, ServiceManager
+from services.managers import (
+    AppointmentManager, ServiceCategoryManager, ServiceManager
+)
 
 # Local Modules
 from core.models import MixinAudit
@@ -151,6 +155,7 @@ class Appointment(MixinAudit):
         max_length=20, null=True, blank=True
     )
     reschedule_count = models.PositiveIntegerField(default=0)
+    supplier_reschedule_count = models.PositiveIntegerField(default=0)
     is_home_service = models.BooleanField(default=False)
     home_address = models.ForeignKey(
         'users.UserAddress',
@@ -171,6 +176,32 @@ class Appointment(MixinAudit):
         'core.Type', on_delete=models.SET_NULL,
         null=True, blank=True, related_name='type_appointment'
     )
+
+    objects = AppointmentManager()
+
+    MAX_RESCHEDULES = 1
+    RESCHEDULE_MIN_NOTICE = timedelta(hours=10)
+
+    def reschedule_block_reason(self, by_supplier=False):
+        """
+        Mensaje que explica por qué no se puede reagendar, o None si se puede.
+        Cliente y proveedor tienen cada uno su propio cupo de reprogramaciones.
+        """
+        if self.status not in [self.STATUS_PENDING, self.STATUS_ACTIVE]:
+            return 'Solo puedes reprogramar citas pendientes o activas.'
+
+        used = self.supplier_reschedule_count if by_supplier else self.reschedule_count
+        if used >= self.MAX_RESCHEDULES:
+            return 'Ya has agotado el límite de 1 reprogramación para esta cita.'
+
+        first_service = self.appointment_service.first()
+        if not first_service or not first_service.start_time:
+            return 'No se encontró el servicio de la cita.'
+
+        if first_service.start_time < timezone.now() + self.RESCHEDULE_MIN_NOTICE:
+            return 'No puedes reprogramar faltando menos de 10 horas para la cita.'
+
+        return None
 
 
 class AppointmentService(MixinAudit):

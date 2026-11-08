@@ -30,6 +30,10 @@ from services.api import serializers
 from services.tasks import permanently_delete_service_task
 from notifications import tasks as notification_tasks
 from transactions import models as transaction_models
+from workers.api.serializers import AvailableDateWithSlotsSerializer
+from workers.availability import (
+    compute_available_slots, get_appointment_duration, group_slots_response
+)
 from workers.models import Worker
 from services.api.serializers import CreateServiceSerializer
 from headquarters.models import HeadquarterWorker
@@ -683,7 +687,34 @@ def _schedule_appointment_notifications(
             service_name=service.name,
         )
 
-    # 2. Recordatorio al cliente
+    # 2. Auto-confirmar si el proveedor no responde en 5 minutos
+    # Pero si la cita empieza en menos de 5 min, confirmamos justo antes de empezar
+    auto_confirm_eta = now + timedelta(minutes=5)
+    if auto_confirm_eta > start_time:
+        auto_confirm_eta = start_time - timedelta(seconds=10)
+
+    if auto_confirm_eta > now:
+        notification_tasks.auto_confirm_appointment.apply_async(
+            kwargs={'appointment_id': appointment.id},
+            eta=auto_confirm_eta,
+        )
+
+    _schedule_time_based_tasks(
+        appointment, service, start_time, end_time, client_user_id, supplier_user_id
+    )
+
+
+def _schedule_time_based_tasks(
+    appointment, service, start_time, end_time, client_user_id, supplier_user_id
+):
+    """
+    Recordatorios y auto-completado según el horario de la cita.
+    Se llama al crear y al reagendar; las tareas del horario anterior se descartan
+    solas porque validan que la hora siga vigente.
+    """
+    now = timezone.now()
+
+    # Recordatorio al cliente
     # Solo programamos si falta más de 30 min. 
     # Si falta menos, el recordatorio será disparado por la tarea de confirmación.
     if start_time > now + timedelta(minutes=30):
@@ -697,7 +728,7 @@ def _schedule_appointment_notifications(
             eta=client_eta,
         )
 
-    # 3. Recordatorio al proveedor
+    # Recordatorio al proveedor
     # Solo programamos si falta más del tiempo definido en remember_in.
     if supplier_user_id and service.remember_in:
         supplier_eta = start_time - timedelta(minutes=service.remember_in)
@@ -712,19 +743,7 @@ def _schedule_appointment_notifications(
                 eta=supplier_eta,
             )
 
-    # 4. Auto-confirmar si el proveedor no responde en 5 minutos
-    # Pero si la cita empieza en menos de 5 min, confirmamos justo antes de empezar
-    auto_confirm_eta = now + timedelta(minutes=5)
-    if auto_confirm_eta > start_time:
-        auto_confirm_eta = start_time - timedelta(seconds=10)
-
-    if auto_confirm_eta > now:
-        notification_tasks.auto_confirm_appointment.apply_async(
-            kwargs={'appointment_id': appointment.id},
-            eta=auto_confirm_eta,
-        )
-
-    # 5. Auto-completar la cita al llegar end_time
+    # Auto-completar la cita al llegar end_time
     if end_time > now:
         notification_tasks.auto_complete_appointment.apply_async(
             kwargs={'appointment_id': appointment.id},
@@ -841,20 +860,22 @@ class ListServices(viewsets.ModelViewSet):
         lng = request.query_params.get('longitude')
 
         queryset = self.get_queryset()
+        only_available = mine != 'true'
 
-        if mine == 'true':
-            queryset = queryset.filter(
+        if only_available:
+            queries = Q(
+                company__state__code='available',
+                company__is_deleted=False,
+                state__code='available',
+                headquarter_service__service__state__code='available',
+                headquarter_service__service__is_deleted=False,
+            )
+        else:
+            queries = Q(
                 created_by_user_id=request.user.pk,
                 company__state__code='available'
             )
-        else:
-            queryset = queryset.filter(
-                company__state__code='available',
-                state__code='available',
-                headquarter_service__service__state__code='available'
-            ).distinct()
 
-        queries = Q()
         additional_filters = {}
 
         if category:
@@ -868,13 +889,9 @@ class ListServices(viewsets.ModelViewSet):
                 Q(headquarter_service__service__name__icontains=search) |
                 Q(headquarter_service__service__description__icontains=search)
             )
-            additional_filters['name__icontains'] = search
-            additional_filters['description__icontains'] = search
 
         if rating:
-            queries = queries & Q(
-                headquarter_service__headquarter__rating__gte=rating
-            )
+            queries = queries & Q(rating__gte=rating)
 
         if only_home_service == 'true':
             queries = queries & Q(
@@ -889,10 +906,14 @@ class ListServices(viewsets.ModelViewSet):
             )
 
         if min_price and max_price:
+            queries = queries & Q(
+                headquarter_service__service__price__range=(min_price, max_price)
+            )
             additional_filters['price__range'] = (min_price, max_price)
 
-        if queries:
-            queryset = queryset.filter(queries).distinct()
+        # Un solo filter() para que todas las condiciones sobre
+        # headquarter_service__service apliquen al mismo servicio.
+        queryset = queryset.filter(queries).distinct()
 
         # Sort by proximity if coordinates are provided
         if lat and lng:
@@ -916,6 +937,13 @@ class ListServices(viewsets.ModelViewSet):
             except (ValueError, TypeError):
                 pass
 
+        serializer_context = {
+            'request': request,
+            'category': category,
+            'search': search,
+            'only_available': only_available,
+            'additional_filters': additional_filters,
+        }
         page = self.paginate_queryset(queryset)
 
         if page is not None:
@@ -931,19 +959,13 @@ class ListServices(viewsets.ModelViewSet):
                 return self.get_paginated_response(cached_data)
 
             serializer = self.get_serializer(
-                page, many=True, context={
-                    'request': request,
-                    'additional_filters': additional_filters}
+                page, many=True, context=serializer_context
             )
             cache.set(cache_key, serializer.data, timeout=50)
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(
-            queryset, many=True,
-            context={
-                'request': request,
-                'category': category
-            }
+            queryset, many=True, context=serializer_context
         )
         return Response(
             {
@@ -1016,7 +1038,7 @@ class SupplierServiceAppointmentsViewSet(viewsets.ViewSet):
         ).prefetch_related('appointment_service', 'traceability').order_by('-confirmation_in').distinct()
 
         serializer = serializers.AppointmentListSerializer(
-            appointments, many=True, context={'request': request}
+            appointments, many=True, context={'request': request, 'as_supplier': True}
         )
         return Response({'success': serializer.data}, status=status.HTTP_200_OK)
 
@@ -1218,79 +1240,143 @@ class CancelAppointment(viewsets.ViewSet):
         return Response({'success': serializer.data}, status=status.HTTP_200_OK)
 
 
+RESCHEDULE_MIN_LEAD = timedelta(minutes=5)
+RESCHEDULE_DEFAULT_DAYS = 15
+RESCHEDULE_MAX_DAYS = 30
+
+
+def _reschedule_slots(appointment, appointment_service, start_date, days):
+    """Slots libres del mismo trabajador para mover la cita, sin su horario actual."""
+    duration = get_appointment_duration(appointment, appointment_service)
+    headquarter_id = appointment_service.service.headquarter_service.values_list(
+        'headquarter_id', flat=True
+    ).first()
+
+    grouped = compute_available_slots(
+        service=appointment_service.service,
+        workers=[appointment_service.worker],
+        start_date=start_date,
+        days=days,
+        duration=duration,
+        headquarter_id=headquarter_id,
+        client=appointment.user,
+        exclude_appointment_id=appointment.id,
+        earliest_start=timezone.now() + RESCHEDULE_MIN_LEAD,
+    )
+    for date_key, slots in grouped.items():
+        grouped[date_key] = [
+            slot for slot in slots
+            if slot['start_time'] != appointment_service.start_time
+        ]
+    return {k: v for k, v in grouped.items() if v}
+
+
+def _get_appointment_to_reschedule(pk, user):
+    """
+    Cita que el usuario puede reagendar y si actúa como proveedor.
+    Si es cliente y proveedor de la misma cita, se trata como cliente.
+    """
+    appointment = get_user_object(models.Appointment, pk, user)
+    if appointment:
+        return appointment, False
+
+    appointment = models.Appointment.objects.owned_by_supplier(user).filter(pk=pk).first()
+    return appointment, appointment is not None
+
+
+class ListRescheduleSlots(viewsets.ViewSet):
+    """Horarios disponibles del mismo trabajador para reagendar una cita (cliente o proveedor)."""
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request: Request, pk=None, *args, **kwargs):
+        appointment, by_supplier = _get_appointment_to_reschedule(pk, request.user)
+        if not appointment:
+            return not_found_response('Cita no encontrada.')
+
+        block_reason = appointment.reschedule_block_reason(by_supplier=by_supplier)
+        if block_reason:
+            return Response({'detail': block_reason}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            days = int(request.query_params.get('days', RESCHEDULE_DEFAULT_DAYS))
+        except ValueError:
+            days = RESCHEDULE_DEFAULT_DAYS
+        days = max(1, min(days, RESCHEDULE_MAX_DAYS))
+
+        appointment_service = appointment.appointment_service.select_related(
+            'service', 'worker'
+        ).first()
+        grouped = _reschedule_slots(
+            appointment, appointment_service, timezone.localdate(), days
+        )
+        serializer = AvailableDateWithSlotsSerializer(
+            group_slots_response(grouped), many=True
+        )
+        return Response({'success': serializer.data}, status=status.HTTP_200_OK)
+
+
 class RescheduleAppointment(viewsets.ViewSet):
-    """Reprograma la fecha y hora de una cita existente."""
+    """Reprograma una cita a un horario libre del mismo trabajador (cliente o proveedor)."""
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def partial_update(self, request: Request, pk=None, *args, **kwargs):
-        appointment = get_user_object(models.Appointment, pk, request.user)
+        appointment, by_supplier = _get_appointment_to_reschedule(pk, request.user)
         if not appointment:
             return not_found_response('Cita no encontrada.')
 
-        if appointment.status not in [
-            models.Appointment.STATUS_PENDING,
-            models.Appointment.STATUS_ACTIVE
-        ]:
-            return Response(
-                {'error': 'Solo puedes reprogramar citas pendientes o activas.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        block_reason = appointment.reschedule_block_reason(by_supplier=by_supplier)
+        if block_reason:
+            return Response({'error': block_reason}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = serializers.RescheduleAppointmentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-
         new_start = data['new_start_time']
-        new_end = data['new_end_time']
+
+        appointment_service = appointment.appointment_service.select_related(
+            'service', 'worker'
+        ).first()
+
         worker_id = data.get('worker_id')
-
-        appointment_service = appointment.appointment_service.first()
-        if not appointment_service:
+        if worker_id and worker_id != appointment_service.worker_id:
             return Response(
-                {'error': 'No se encontró el servicio de la cita.'},
+                {'error': 'Solo puedes reagendar con el mismo profesional de la cita.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # 1. Enforce Max 1 reschedule
-        if appointment.reschedule_count >= 1:
-            return Response(
-                {'error': 'Ya has agotado el límite de 1 reprogramación para esta cita.'},
-                status=status.HTTP_400_BAD_REQUEST
+        local_date = utils.get_local_time(new_start, settings.TIME_ZONE).date()
+
+        with transaction.atomic():
+            # Bloquea al trabajador para que dos reservas simultáneas no tomen el mismo slot.
+            Worker.objects.select_for_update().get(pk=appointment_service.worker_id)
+
+            grouped = _reschedule_slots(appointment, appointment_service, local_date, 1)
+            slot = next(
+                (s for s in grouped.get(local_date.strftime('%Y-%m-%d'), [])
+                 if s['start_time'] == new_start),
+                None
             )
+            if not slot:
+                return Response(
+                    {'error': 'El horario seleccionado ya no está disponible. Elige otro.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        # 2. Enforce 10-hour notice
-        if appointment_service.start_time < timezone.now() + timedelta(hours=10):
-            return Response(
-                {'error': 'No puedes reprogramar faltando menos de 10 horas para la cita.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            appointment_service.start_time = slot['start_time']
+            appointment_service.end_time = slot['end_time']
+            appointment_service.save(update_fields=['start_time', 'end_time', 'updated_at'])
 
-        target_worker_id = worker_id or appointment_service.worker_id
-
-        overlap = models.AppointmentService.objects.filter(
-            worker_id=target_worker_id,
-            start_time__lt=new_end,
-            end_time__gt=new_start
-        ).exclude(appointment=appointment).exists()
-
-        if overlap:
-            return Response(
-                {'error': 'El trabajador no está disponible en ese horario.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        appointment_service.start_time = new_start
-        appointment_service.end_time = new_end
-        if worker_id:
-            appointment_service.worker_id = worker_id
-        appointment_service.save()
-
-        appointment.confirmation_in = new_start
-        appointment.remember_in = new_start - timedelta(minutes=30)
-        appointment.reschedule_count += 1
-        appointment.save()
+            appointment.confirmation_in = new_start
+            appointment.remember_in = new_start - timedelta(minutes=30)
+            if by_supplier:
+                appointment.supplier_reschedule_count += 1
+            else:
+                appointment.reschedule_count += 1
+            appointment.save()
 
         # Friendly date formatting
         local_time = utils.get_local_time(new_start, settings.TIME_ZONE)
@@ -1305,18 +1391,30 @@ class RescheduleAppointment(viewsets.ViewSet):
             appointment=appointment,
             previous_state=appointment.status,
             new_state=appointment.status,
-            change_reason=f'Reprogramada para el {friendly_date}',
+            change_reason=(
+                f'Reprogramada por el proveedor para el {friendly_date}'
+                if by_supplier else f'Reprogramada para el {friendly_date}'
+            ),
             created_by_user_id=request.user.id
         )
 
-        # Notify the other party
+        supplier_user_id = appointment_service.service.headquarter_service.values_list(
+            'headquarter__company__created_by_user_id', flat=True
+        ).first()
+        _schedule_time_based_tasks(
+            appointment, appointment_service.service,
+            appointment_service.start_time, appointment_service.end_time,
+            appointment.user_id, supplier_user_id,
+        )
+
         notification_tasks.notify_appointment_rescheduled.delay(
             appointment_id=appointment.id,
-            rescheduled_by_user_id=request.user.id
+            rescheduled_by_user_id=request.user.id,
+            new_date_label=friendly_date,
         )
 
         detail_serializer = serializers.AppointmentDetailSerializer(
-            appointment, context={'request': request}
+            appointment, context={'request': request, 'as_supplier': by_supplier}
         )
         return Response({'success': detail_serializer.data}, status=status.HTTP_200_OK)
 
@@ -1417,15 +1515,22 @@ class NearbyServices(viewsets.ViewSet):
             )
 
         user_point = (lat, lng)
-        headquarters = Headquarter.objects.filter(
+        visibility = Q(
             latitude__isnull=False,
-            longitude__isnull=False
-        ).select_related('company').prefetch_related('headquarter_service')
-
+            longitude__isnull=False,
+            company__state__code='available',
+            company__is_deleted=False,
+            state__code='available',
+            headquarter_service__service__state__code='available',
+            headquarter_service__service__is_deleted=False,
+        )
         if category_id:
-            headquarters = headquarters.filter(
+            visibility &= Q(
                 headquarter_service__service__service_category_id=category_id
-            ).distinct()
+            )
+
+        headquarters = Headquarter.objects.filter(visibility).distinct()\
+            .select_related('company').prefetch_related('headquarter_service')
 
         nearby = []
         for hq in headquarters:
@@ -1442,7 +1547,11 @@ class NearbyServices(viewsets.ViewSet):
         results = []
         for hq, distance in nearby:
             hq_data = HeadquarterWithServicesSerializer(
-                hq, context={'request': request}
+                hq, context={
+                    'request': request,
+                    'category': category_id,
+                    'only_available': True,
+                }
             ).data
             hq_data['distance_km'] = distance
             results.append(hq_data)

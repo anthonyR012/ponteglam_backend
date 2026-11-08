@@ -16,6 +16,9 @@ from users.models import User
 
 logger = logging.getLogger(__name__)
 
+# Margen para detectar tareas programadas con un horario que ya cambió (cita reagendada).
+STALE_TASK_TOLERANCE = timedelta(minutes=2)
+
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=10)
 def send_fcm_notification_batch_task(self, tokens, title, body, data=None):
@@ -317,6 +320,8 @@ def notify_client_reminder(appointment_id: int, client_user_id: int, service_nam
 
     now = timezone.now()
     diff = app_service.start_time - now
+    if diff > timedelta(minutes=30) + STALE_TASK_TOLERANCE:
+        return f"Appointment {appointment_id} was rescheduled, skipping stale reminder."
     minutes = round(diff.total_seconds() / 60)
 
     title = "Tu cita está próxima ⏰"
@@ -370,6 +375,8 @@ def notify_supplier_reminder(
 
     now = timezone.now()
     diff = app_service.start_time - now
+    if diff > timedelta(minutes=minutes_before) + STALE_TASK_TOLERANCE:
+        return f"Appointment {appointment_id} was rescheduled, skipping stale reminder."
     minutes = round(diff.total_seconds() / 60)
 
     title = "Próximo servicio ⏰"
@@ -468,6 +475,10 @@ def auto_complete_appointment(appointment_id: int):
 
     if not appointment:
         return f"Appointment {appointment_id} is not active, skipping auto-complete."
+
+    app_service = appointment.appointment_service.first()
+    if app_service and app_service.end_time > timezone.now() + STALE_TASK_TOLERANCE:
+        return f"Appointment {appointment_id} was rescheduled, skipping stale auto-complete."
 
     previous_status = appointment.status
     appointment.status = Appointment.STATUS_COMPLETED
@@ -611,9 +622,12 @@ def notify_appointment_cancelled(appointment_id: int, cancelled_by_user_id: int)
 
 
 @shared_task
-def notify_appointment_rescheduled(appointment_id: int, rescheduled_by_user_id: int):
+def notify_appointment_rescheduled(
+    appointment_id: int, rescheduled_by_user_id: int, new_date_label: str = None
+):
     """
     Notifica a la contraparte que la cita ha sido reprogramada.
+    Si reprogramó el proveedor, el destinatario es el cliente.
     """
     appointment = Appointment.objects.filter(id=appointment_id).first()
     if not appointment:
@@ -633,13 +647,25 @@ def notify_appointment_rescheduled(appointment_id: int, rescheduled_by_user_id: 
         return "No recipient found."
 
     title = "Cita Reprogramada 🕒"
-    body = (
-        f"Tu cita para **{service_name}** ha sido reprogramada por la otra parte. "
-        "Revisa los nuevos detalles en tu historial."
-    )
+    if not is_client and new_date_label:
+        body = (
+            f"El proveedor reprogramó tu cita de **{service_name}** para el "
+            f"{new_date_label}. Revisa los detalles en tu historial."
+        )
+    elif new_date_label:
+        body = (
+            f"El cliente reprogramó la cita de **{service_name}** para el "
+            f"{new_date_label}. Revisa tu agenda."
+        )
+    else:
+        body = (
+            f"Tu cita para **{service_name}** ha sido reprogramada por la otra parte. "
+            "Revisa los nuevos detalles en tu historial."
+        )
     
+    go_to = 'supplier_appointments' if is_client else 'history'
     payload = {
-        'action': 'history',
+        'action': go_to,
         'appointment_id': str(appointment_id),
     }
 
@@ -647,7 +673,7 @@ def notify_appointment_rescheduled(appointment_id: int, rescheduled_by_user_id: 
         title=title,
         body=body,
         user_id=recipient_user_id,
-        go_to='history',
+        go_to=go_to,
         created_by_user_id=rescheduled_by_user_id,
         data=payload
     )
