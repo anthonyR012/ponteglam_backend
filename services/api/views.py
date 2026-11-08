@@ -559,6 +559,8 @@ class CreateAppointment(viewsets.ViewSet):
             worker_id=worker_id,
             appointment__user=request.user,
             start_time=start_time,
+        ).exclude(
+            appointment__status=models.Appointment.STATUS_CANCELLED
         ).exists()
 
         if duplicate:
@@ -917,7 +919,12 @@ class ListServices(viewsets.ModelViewSet):
         page = self.paginate_queryset(queryset)
 
         if page is not None:
-            cache_key = f'services_list_page_{query_page}_mine_{mine}_home_{only_home_service}_avail_{available_for}_lat_{lat}_lng_{lng}'
+            cache_key = (
+                f'services_list_page_{query_page}_user_{request.user.pk}_'
+                f'mine_{mine}_home_{only_home_service}_avail_{available_for}_'
+                f'lat_{lat}_lng_{lng}_category_{category}_search_{search}_'
+                f'rating_{rating}_min_{min_price}_max_{max_price}'
+            )
             cached_data = cache.get(cache_key)
 
             if cached_data is not None:
@@ -952,7 +959,10 @@ class ListCategoriesServices(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
     def list(self, request: Request, *args, **kwargs):
-        categories = models.ServiceCategory.objects.all()
+        if request.query_params.get('include_empty') == 'true':
+            categories = models.ServiceCategory.objects.all()
+        else:
+            categories = models.ServiceCategory.objects.with_available_services()
         serializer = self.serializer_class(
             categories, many=True, context={'request': request}
         )

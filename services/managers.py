@@ -3,6 +3,22 @@ from django.db import models
 from core import utils
 
 
+class ServiceCategoryManager(models.Manager):
+
+    def with_available_services(self):
+        """Categorías con al menos un servicio visible para los clientes."""
+        prefix = 'service_category__'
+        hq = f'{prefix}headquarter_service__headquarter__'
+        return self.get_queryset().filter(**{
+            f'{prefix}is_deleted': False,
+            f'{prefix}state__code': 'available',
+            f'{hq}is_deleted': False,
+            f'{hq}state__code': 'available',
+            f'{hq}company__is_deleted': False,
+            f'{hq}company__state__code': 'available',
+        }).distinct()
+
+
 class ServiceManager(models.Manager):
     """
     Manager for the Service model.

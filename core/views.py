@@ -15,33 +15,29 @@ def send_email_user_verification_code(
         user_id: int, subject: str, template_name: str):
     """Envía el correo con el código de verificación ya generado para el usuario."""
 
-    try:
-        user = User.objects.get(id=user_id)
-        verification_code = UserVerificationCode.objects.filter(
-            user=user
-        ).order_by('-created_at').first()
+    user = User.objects.get(id=user_id)
+    verification_code = UserVerificationCode.objects.filter(
+        user=user
+    ).order_by('-created_at').first()
 
-        if not verification_code:
-            return "No verification code found for user"
+    if not verification_code:
+        return "No verification code found for user"
 
-        context = {
-            'user': user,
-            'code': verification_code.code,
-        }
+    context = {
+        'user': user,
+        'code': verification_code.code,
+    }
 
-        body = render_to_string(template_name, context)
+    body = render_to_string(template_name, context)
 
-        email_msg = EmailMessage(
-            subject=subject, body=body, to=[user.email]
-        )
-        email_msg.content_subtype = 'html'
-        email_msg.mixed_subtype = 'related'
-        email_msg.encoding = "utf-8"
-        email_msg.send()
-        return "Email sent successfully"
-
-    except Exception as e:
-        return str(e)
+    email_msg = EmailMessage(
+        subject=subject, body=body, to=[user.email]
+    )
+    email_msg.content_subtype = 'html'
+    email_msg.mixed_subtype = 'related'
+    email_msg.encoding = "utf-8"
+    email_msg.send()
+    return "Email sent successfully"
 
 
 def hello_world(request):

@@ -1,7 +1,7 @@
 # Third-party Libraries
 from django.db import models
 from django.utils import timezone
-from services.managers import ServiceManager
+from services.managers import ServiceCategoryManager, ServiceManager
 
 # Local Modules
 from core.models import MixinAudit
@@ -104,6 +104,8 @@ class ServiceCategory(MixinAudit):
         'core.Type', on_delete=models.SET_NULL,
         null=True, blank=True, related_name='state_service_category'
     )
+
+    objects = ServiceCategoryManager()
 
     def __str__(self):
         return self.description
